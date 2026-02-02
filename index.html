@@ -524,7 +524,7 @@
         }
         
         async function extractCitationsWithAI(text, keyword = '', numCitations = 5) {
-            showMessage('🤖 Analyse du texte avec IA...', 'loading');
+            showMessage('🤖 Mode IA activé - Analyse du texte...', 'loading');
             
             // D'abord, obtenir des candidats avec la méthode classique
             const candidates = extractCitations(text, keyword, numCitations * 3);
@@ -559,7 +559,12 @@ INSTRUCTIONS :
                 const model = OPENROUTER_MODELS[currentModelIndex];
                 
                 try {
-                    showMessage(`🤖 Tentative avec ${model.split('/')[1]}...`, 'loading');
+                    showMessage(`🤖 IA active - Modèle: ${model.split('/')[1].split(':')[0]}...`, 'loading');
+                    
+                    console.log('Envoi au proxy:', {
+                        model: model,
+                        message_length: prompt.length
+                    });
                     
                     const response = await callOpenRouterAPI(prompt, model);
                     
@@ -572,11 +577,13 @@ INSTRUCTIONS :
                             .slice(0, numCitations);
                         
                         if (aiCitations.length > 0) {
+                            showMessage(`✅ ${aiCitations.length} citation(s) sélectionnée(s) par l'IA`, 'info');
                             return aiCitations.map((phrase, index) => ({
                                 phrase: phrase,
                                 score: 100 - index,
                                 position: 0,
-                                aiGenerated: true
+                                aiGenerated: true,
+                                modelUsed: model.split('/')[1]
                             }));
                         }
                     }
@@ -600,22 +607,26 @@ INSTRUCTIONS :
             }
             
             // Si tous les modèles échouent, retourner les candidats classiques
-            showMessage('⚠️ IA non disponible, utilisation de la méthode classique', 'info');
+            showMessage('⚠️ IA non disponible - Méthode classique utilisée', 'info');
             return candidates.slice(0, numCitations);
         }
         
         async function callOpenRouterAPI(prompt, model) {
+            const payload = {
+                model: model,
+                message: prompt,
+                temperature: 0.7,
+                max_tokens: 2000
+            };
+            
+            console.log('Payload envoyé au proxy:', payload);
+            
             const fetchPromise = fetch(PROXY_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    model: model,
-                    message: prompt,
-                    temperature: 0.7,
-                    max_tokens: 2000
-                })
+                body: JSON.stringify(payload)
             });
             
             const timeoutPromise = new Promise((_, reject) => {
@@ -625,13 +636,16 @@ INSTRUCTIONS :
             try {
                 const response = await Promise.race([fetchPromise, timeoutPromise]);
                 
+                console.log('Statut réponse:', response.status);
+                
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    const errorMsg = errorData.error || errorData.detail || `HTTP ${response.status}`;
-                    throw new Error(errorMsg);
+                    const errorText = await response.text();
+                    console.error('Erreur réponse:', errorText);
+                    throw new Error(`OpenRouter API error: ${response.status}`);
                 }
                 
                 const data = await response.json();
+                console.log('Données reçues:', data);
                 
                 // Le proxy HuggingFace retourne directement le texte dans "response"
                 if (data.response) {
@@ -687,7 +701,7 @@ INSTRUCTIONS :
                     }
                 }
                 
-                const aiBadge = item.aiGenerated ? '<span class="ai-badge">IA</span>' : '';
+                const aiBadge = item.aiGenerated ? `<span class="ai-badge">IA: ${item.modelUsed || 'AI'}</span>` : '';
                 
                 citationDiv.innerHTML = `
                     <div class="citation-text">"${item.phrase}"</div>
