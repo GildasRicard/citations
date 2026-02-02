@@ -401,15 +401,75 @@
 
         // Vocabulaire religieux pour détection
         const vocabulaireReligieux = [
-            'dieu', 'seigneur', 'christ', 'jésus', 'esprit', 'saint', 'âme', 'foi', 'grâce',
-            'prière', 'sacré', 'divin', 'providence', 'miséricorde', 'rédemption', 'salut',
-            'paradis', 'ciel', 'éternel', 'trinité', 'église', 'évangile', 'croix',
-            'péché', 'pardon', 'charité', 'amour', 'vertu', 'communion', 'béni',
-            'allah', 'prophète', 'coran', 'islam', 'musulman', 'croyant', 'fidèle',
-            'ramadan', 'prière', 'mosquée', 'hijab', 'hadith', 'sourate', 'mecque',
-            'spirituel', 'mystique', 'contempl', 'méditation', 'illumination', 'révélation',
-            'transcendance', 'sagesse', 'vérité', 'lumière', 'ténèbres'
-        ];
+    // Noms divins et figures sacrées
+    'dieu', 'seigneur', 'christ', 'jésus', 'esprit', 'saint', 'trinité',
+    'allah', 'prophète', 'muhammad', 'mahomet', 'marie', 'vierge',
+    
+    // Concepts théologiques fondamentaux
+    'divin', 'sacré', 'éternel', 'transcendance', 'immanence', 'providence',
+    'grâce', 'miséricorde', 'rédemption', 'salut', 'incarnation', 'résurrection',
+    
+    // Dimension intérieure et mystique
+    'âme', 'esprit', 'cœur', 'conscience', 'intériorité', 'mystique',
+    'contempl', 'méditation', 'oraison', 'recueillement', 'silence',
+    'illumination', 'révélation', 'extase', 'union', 'théosis', 'déification',
+    
+    // Vertus et états spirituels
+    'foi', 'espérance', 'charité', 'amour', 'humilité', 'obéissance',
+    'pauvreté', 'détachement', 'abandon', 'confiance', 'patience',
+    'sagesse', 'discernement', 'pureté', 'simplicité',
+    
+    // Pratiques et voies
+    'prière', 'jeûne', 'ascèse', 'pénitence', 'pardon', 'confession',
+    'communion', 'eucharistie', 'sacrement', 'baptême',
+    'ramadan', 'hajj', 'pèlerinage', 'dhikr', 'soufisme',
+    
+    // Chute et rédemption
+    'péché', 'chute', 'tentation', 'épreuve', 'purification', 'conversion',
+    'repentir', 'pénitent', 'rachat', 'expiation',
+    
+    // Réalités eschatologiques
+    'paradis', 'ciel', 'enfer', 'purgatoire', 'jugement', 'éternité',
+    'royaume', 'vie éternelle', 'résurrection', 'gloire',
+    
+    // Textes et traditions
+    'évangile', 'écriture', 'parole', 'testament', 'bible',
+    'coran', 'sourate', 'verset', 'hadith', 'sunna', 'tradition',
+    
+    // Lieux et communautés
+    'église', 'temple', 'cathédrale', 'monastère', 'ermitage',
+    'mosquée', 'mecque', 'médine', 'jérusalem',
+    'communauté', 'fidèle', 'croyant', 'disciple', 'frère', 'sœur',
+    
+    // Symboles et rituels
+    'croix', 'crucifixion', 'passion', 'sang', 'pain', 'vin',
+    'lumière', 'ténèbres', 'eau', 'feu', 'souffle', 'voile',
+    'rosaire', 'chapelet', 'icône', 'relique',
+    
+    // Paradoxes mystiques classiques
+    'mort', 'vie', 'vide', 'plein', 'nuit', 'jour',
+    'anéantissement', 'être', 'néant', 'tout', 'rien',
+    'pauvre', 'riche', 'petit', 'grand', 'dernier', 'premier',
+    'serviteur', 'maître', 'esclave', 'libre',
+    
+    // Voie mystique
+    'nuit obscure', 'désert', 'aridité', 'consolation', 'désolation',
+    'quiétude', 'passivité', 'activité', 'effort', 'don',
+    'volonté', 'abandon', 'renoncement', 'possession',
+    
+    // Termes soufis et mystiques musulmans
+    'fana', 'baqa', 'tawhid', 'nafs', 'qalb', 'ruh',
+    'maqam', 'hal', 'tariqa', 'soufi', 'derviche',
+    
+    // Termes mystiques chrétiens
+    'théologie négative', 'apophatique', 'nuée', 'ténèbre divine',
+    'hésychasme', 'quiétisme', 'abandon', 'petite voie',
+    
+    // Expérience spirituelle
+    'consolation', 'sécheresse', 'aridité', 'ferveur',
+    'vision', 'locution', 'stigmate', 'miracle', 'grâce',
+    'onction', 'présence', 'absence', 'proximité', 'distance'
+];
 
         let fileContent = '';
         let selectedFile = null;
@@ -595,14 +655,178 @@
             let score = 0;
 
             const motsParadoxaux = [
-                ['lumière', 'ténèbres'], ['lumière', 'obscurité'], ['bien', 'mal'],
-                ['vie', 'mort'], ['amour', 'haine'], ['paix', 'guerre'],
-                ['céleste', 'terrestre'], ['éternel', 'éphémère'], ['sacré', 'profane'],
-                ['foi', 'doute'], ['espoir', 'désespoir'], ['tout', 'rien'],
-                ['visible', 'invisible'], ['connu', 'inconnu'], ['présence', 'absence'],
-                ['silence', 'parole'], ['unité', 'multiplicité'], ['grand', 'petit'],
-                ['dedans', 'dehors'], ['soi', 'autre'], ['vrai', 'faux']
-            ];
+    // Lumière et obscurité
+    ['lumière', 'ténèbres'], ['lumière', 'obscurité'], ['lumière', 'nuit'],
+    ['jour', 'nuit'], ['clarté', 'obscurité'], ['illumination', 'aveuglement'],
+    ['voir', 'aveugle'], ['révélation', 'voile'], ['dévoiler', 'cacher'],
+    
+    // Vie et mort
+    ['vie', 'mort'], ['vivre', 'mourir'], ['vivant', 'mort'],
+    ['naître', 'mourir'], ['résurrection', 'mort'], ['renaissance', 'mort'],
+    ['mortel', 'immortel'], ['périssable', 'impérissable'],
+    
+    // Être et néant
+    ['être', 'néant'], ['être', 'non-être'], ['existence', 'néant'],
+    ['tout', 'rien'], ['plénitude', 'vide'], ['plein', 'vide'],
+    ['présence', 'absence'], ['exister', 'anéantir'],
+    
+    // Connaissance et ignorance
+    ['savoir', 'ignorer'], ['connaissance', 'ignorance'], ['sagesse', 'folie'],
+    ['connu', 'inconnu'], ['comprendre', 'incompréhensible'], ['certain', 'incertain'],
+    ['science', 'ignorance'], ['révéler', 'cacher'], ['manifeste', 'caché'],
+    ['visible', 'invisible'], ['apparaître', 'disparaître'], ['montrer', 'voiler'],
+    
+    // Foi et doute
+    ['foi', 'doute'], ['croire', 'douter'], ['certitude', 'incertitude'],
+    ['confiance', 'méfiance'], ['espoir', 'désespoir'], ['espérance', 'désespérance'],
+    
+    // Amour et haine
+    ['amour', 'haine'], ['aimer', 'haïr'], ['charité', 'égoïsme'],
+    ['dilection', 'aversion'], ['attraction', 'répulsion'],
+    
+    // Bien et mal
+    ['bien', 'mal'], ['bon', 'mauvais'], ['vertu', 'vice'],
+    ['juste', 'injuste'], ['justice', 'injustice'], ['sainteté', 'péché'],
+    ['pur', 'impur'], ['pureté', 'impureté'], ['innocent', 'coupable'],
+    
+    // Paix et guerre
+    ['paix', 'guerre'], ['repos', 'combat'], ['calme', 'tempête'],
+    ['tranquillité', 'trouble'], ['quiétude', 'agitation'], ['sérénité', 'tourment'],
+    
+    // Grandeur et petitesse
+    ['grand', 'petit'], ['grandeur', 'petitesse'], ['immense', 'infime'],
+    ['élevé', 'bas'], ['haut', 'bas'], ['sublime', 'humble'],
+    ['majesté', 'humilité'], ['gloire', 'abaissement'],
+    
+    // Richesse et pauvreté (paradoxe évangélique central)
+    ['riche', 'pauvre'], ['richesse', 'pauvreté'], ['posséder', 'dépouiller'],
+    ['avoir', 'manquer'], ['abondance', 'dénuement'], ['plein', 'vide'],
+    ['donner', 'recevoir'], ['perdre', 'gagner'], ['abandonner', 'garder'],
+    
+    // Force et faiblesse
+    ['fort', 'faible'], ['force', 'faiblesse'], ['puissance', 'impuissance'],
+    ['pouvoir', 'impuissance'], ['capable', 'incapable'], ['victorieux', 'vaincu'],
+    
+    // Liberté et servitude
+    ['libre', 'esclave'], ['liberté', 'servitude'], ['libérer', 'enchaîner'],
+    ['délivrer', 'captif'], ['autonomie', 'dépendance'], ['indépendant', 'dépendant'],
+    
+    // Premier et dernier (paradoxe évangélique)
+    ['premier', 'dernier'], ['commencer', 'finir'], ['début', 'fin'],
+    ['origine', 'terme'], ['alpha', 'oméga'], ['principe', 'fin'],
+    
+    // Maître et serviteur
+    ['maître', 'serviteur'], ['maître', 'esclave'], ['seigneur', 'serviteur'],
+    ['commander', 'obéir'], ['dominer', 'servir'], ['roi', 'esclave'],
+    
+    // Intérieur et extérieur
+    ['dedans', 'dehors'], ['intérieur', 'extérieur'], ['intime', 'lointain'],
+    ['proche', 'lointain'], ['proximité', 'distance'], ['caché', 'manifeste'],
+    
+    // Unité et multiplicité
+    ['un', 'multiple'], ['unité', 'multiplicité'], ['unique', 'divers'],
+    ['simple', 'composé'], ['simplicité', 'complexité'], ['indivisible', 'divisible'],
+    
+    // Parole et silence
+    ['parole', 'silence'], ['parler', 'taire'], ['dire', 'silence'],
+    ['verbe', 'silence'], ['exprimer', 'taire'], ['proclamer', 'cacher'],
+    
+    // Activité et passivité (mystique)
+    ['agir', 'subir'], ['actif', 'passif'], ['action', 'passion'],
+    ['faire', 'laisser'], ['effort', 'abandon'], ['volonté', 'abandon'],
+    ['travailler', 'reposer'], ['œuvre', 'grâce'], ['mérite', 'don'],
+    
+    // Mouvement et repos
+    ['mouvement', 'repos'], ['mobile', 'immobile'], ['marcher', 'demeurer'],
+    ['aller', 'rester'], ['avancer', 'arrêter'], ['chercher', 'trouver'],
+    ['errer', 'habiter'], ['exil', 'demeure'], ['voyage', 'séjour'],
+    
+    // Temps et éternité
+    ['temps', 'éternité'], ['temporel', 'éternel'], ['éphémère', 'éternel'],
+    ['passager', 'permanent'], ['transitoire', 'immuable'], ['changeant', 'immuable'],
+    ['mortel', 'immortel'], ['corruptible', 'incorruptible'],
+    
+    // Terre et ciel
+    ['terre', 'ciel'], ['terrestre', 'céleste'], ['bas', 'haut'],
+    ['matériel', 'spirituel'], ['corporel', 'spirituel'], ['chair', 'esprit'],
+    ['charnel', 'spirituel'], ['monde', 'ciel'], ['séculier', 'sacré'],
+    
+    // Sacré et profane
+    ['sacré', 'profane'], ['saint', 'profane'], ['divin', 'humain'],
+    ['surnaturel', 'naturel'], ['grâce', 'nature'], ['transcendant', 'immanent'],
+    
+    // Soi et autre (mystique de l'union)
+    ['soi', 'autre'], ['je', 'tu'], ['moi', 'toi'],
+    ['propre', 'étranger'], ['même', 'autre'], ['identité', 'altérité'],
+    
+    // Vérité et erreur
+    ['vrai', 'faux'], ['vérité', 'erreur'], ['vérité', 'mensonge'],
+    ['authentique', 'illusoire'], ['réel', 'apparent'], ['être', 'paraître'],
+    
+    // Joie et tristesse
+    ['joie', 'tristesse'], ['joie', 'douleur'], ['consolation', 'désolation'],
+    ['allégresse', 'affliction'], ['bonheur', 'malheur'], ['béatitude', 'souffrance'],
+    
+    // Souffrance et gloire (kénose/passion)
+    ['souffrance', 'gloire'], ['croix', 'gloire'], ['humiliation', 'exaltation'],
+    ['abaissement', 'élévation'], ['passion', 'résurrection'], ['mort', 'résurrection'],
+    
+    // Plénitude et vide (mystique apophatique)
+    ['plénitude', 'dépouillement'], ['tout', 'néant'], ['posséder', 'renoncer'],
+    ['avoir', 'être'], ['accumulation', 'dépouillement'], ['saisir', 'lâcher'],
+    
+    // Désir et détachement
+    ['désir', 'détachement'], ['vouloir', 'renoncer'], ['convoiter', 'abandonner'],
+    ['attacher', 'détacher'], ['tenir', 'lâcher'], ['garder', 'donner'],
+    
+    // Parler et taire (mystique apophatique)
+    ['affirmer', 'nier'], ['dire', 'indicible'], ['nommer', 'innommable'],
+    ['exprimer', 'inexprimable'], ['comprendre', 'incompréhensible'],
+    
+    // Repos et effort
+    ['repos', 'effort'], ['reposer', 'travailler'], ['sommeil', 'veille'],
+    ['contempler', 'agir'], ['quiétude', 'ascèse'], ['passivité', 'action'],
+    
+    // Nourrir et jeûner
+    ['nourrir', 'jeûner'], ['manger', 'jeûner'], ['festin', 'jeûne'],
+    ['satiété', 'faim'], ['rassasier', 'affamer'], ['abondance', 'abstinence'],
+    
+    // Ouverture et fermeture
+    ['ouvrir', 'fermer'], ['ouvert', 'fermé'], ['accueillir', 'refuser'],
+    ['recevoir', 'rejeter'], ['porte ouverte', 'porte fermée'],
+    
+    // Sommeil et éveil (spirituel)
+    ['éveil', 'sommeil'], ['éveillé', 'endormi'], ['veille', 'sommeil'],
+    ['vigilance', 'torpeur'], ['lucide', 'aveugle'],
+    
+    // Monter et descendre (kénose/ascension)
+    ['monter', 'descendre'], ['ascension', 'descente'], ['élever', 'abaisser'],
+    ['grimper', 'tomber'], ['lever', 'baisser'],
+    
+    // Rassembler et disperser
+    ['rassembler', 'disperser'], ['unir', 'séparer'], ['joindre', 'diviser'],
+    ['réunir', 'éparpiller'], ['concentrer', 'dissiper'],
+    
+    // Remplir et vider (kénose)
+    ['remplir', 'vider'], ['combler', 'creuser'], ['garnir', 'dépouiller'],
+    ['emplir', 'vider'], ['saturer', 'épuiser'],
+    
+    // Construire et détruire
+    ['construire', 'détruire'], ['édifier', 'démolir'], ['bâtir', 'ruiner'],
+    ['créer', 'anéantir'], ['fonder', 'renverser'],
+    
+    // Lier et délier (pouvoir des clés)
+    ['lier', 'délier'], ['attacher', 'détacher'], ['enchaîner', 'libérer'],
+    ['nouer', 'dénouer'], ['retenir', 'relâcher'],
+    
+    // Montrer et cacher (mystère)
+    ['révéler', 'cacher'], ['dévoiler', 'voiler'], ['montrer', 'dissimuler'],
+    ['manifester', 'mystère'], ['apparent', 'secret'], ['public', 'secret'],
+    
+    // Nouveau et ancien
+    ['nouveau', 'ancien'], ['neuf', 'vieux'], ['recommencer', 'finir'],
+    ['renaissance', 'vieillesse'], ['innovation', 'tradition']
+];
 
             motsParadoxaux.forEach(paire => {
                 if (phraseLower.includes(paire[0]) && phraseLower.includes(paire[1])) {
@@ -627,20 +851,501 @@
 
         function getAntonyms(keyword) {
             const antonymesMap = {
-                'lumière': ['ténèbres', 'obscurité', 'ombre'],
-                'bien': ['mal', 'vice', 'péché'],
-                'vie': ['mort', 'trépas'],
-                'amour': ['haine', 'indifférence'],
-                'paix': ['guerre', 'conflit'],
-                'foi': ['doute', 'incrédulité'],
-                'espoir': ['désespoir'],
-                'liberté': ['servitude', 'esclavage'],
-                'sacré': ['profane'],
-                'grâce': ['péché'],
-                'force': ['faiblesse'],
-                'jour': ['nuit'],
-                'haut': ['bas']
-            };
+    // Lumière et obscurité
+    'lumière': ['ténèbres', 'obscurité', 'ombre', 'nuit', 'noirceur', 'opacité'],
+    'ténèbres': ['lumière', 'clarté', 'jour', 'luminosité', 'éclat'],
+    'obscurité': ['lumière', 'clarté', 'luminosité', 'transparence'],
+    'jour': ['nuit', 'ténèbres', 'obscurité'],
+    'nuit': ['jour', 'lumière', 'aube', 'aurore'],
+    'clarté': ['obscurité', 'ténèbres', 'opacité'],
+    'illumination': ['aveuglement', 'obscurité', 'ignorance'],
+    'aveugle': ['voyant', 'clairvoyant', 'lucide'],
+    'voir': ['aveugler', 'ignorer', 'méconnaître'],
+    
+    // Vie et mort
+    'vie': ['mort', 'trépas', 'décès', 'agonie', 'fin'],
+    'mort': ['vie', 'naissance', 'renaissance', 'résurrection'],
+    'vivre': ['mourir', 'périr', 'expirer', 'trépasser'],
+    'mourir': ['vivre', 'naître', 'renaître', 'ressusciter'],
+    'vivant': ['mort', 'défunt', 'inanimé', 'cadavre'],
+    'naître': ['mourir', 'disparaître', 'finir'],
+    'naissance': ['mort', 'fin', 'terme', 'décès'],
+    'résurrection': ['mort', 'ensevelissement', 'tombeau'],
+    'mortel': ['immortel', 'éternel', 'impérissable'],
+    'immortel': ['mortel', 'périssable', 'éphémère'],
+    'périssable': ['impérissable', 'éternel', 'immortel'],
+    
+    // Être et néant
+    'être': ['néant', 'non-être', 'rien', 'vide'],
+    'néant': ['être', 'existence', 'tout', 'plénitude'],
+    'existence': ['néant', 'non-existence', 'absence'],
+    'exister': ['néant', 'anéantir', 'disparaître'],
+    'tout': ['rien', 'néant', 'vide', 'absence'],
+    'rien': ['tout', 'plénitude', 'être', 'existence'],
+    'plénitude': ['vide', 'vacuité', 'néant', 'manque'],
+    'plein': ['vide', 'creux', 'vacant', 'dépouillé'],
+    'vide': ['plein', 'rempli', 'comblé', 'saturé'],
+    'présence': ['absence', 'éloignement', 'manque'],
+    'absence': ['présence', 'proximité', 'présent'],
+    'anéantir': ['créer', 'être', 'exister', 'subsister'],
+    
+    // Connaissance et ignorance
+    'savoir': ['ignorer', 'méconnaître', 'ignorer'],
+    'ignorer': ['savoir', 'connaître', 'comprendre'],
+    'connaissance': ['ignorance', 'méconnaissance', 'aveuglement'],
+    'ignorance': ['connaissance', 'savoir', 'science', 'sagesse'],
+    'sagesse': ['folie', 'sottise', 'déraison', 'ignorance'],
+    'folie': ['sagesse', 'raison', 'sens', 'prudence'],
+    'sage': ['fou', 'insensé', 'ignorant'],
+    'fou': ['sage', 'sensé', 'raisonnable'],
+    'connu': ['inconnu', 'ignoré', 'caché', 'mystérieux'],
+    'inconnu': ['connu', 'familier', 'révélé', 'manifeste'],
+    'comprendre': ['ignorer', 'méconnaître', 'incompréhensible'],
+    'incompréhensible': ['compréhensible', 'clair', 'évident', 'intelligible'],
+    'certain': ['incertain', 'douteux', 'hésitant'],
+    'incertain': ['certain', 'sûr', 'assuré', 'évident'],
+    'science': ['ignorance', 'méconnaissance', 'aveuglement'],
+    'révéler': ['cacher', 'voiler', 'dissimuler', 'occulter'],
+    'cacher': ['révéler', 'montrer', 'dévoiler', 'manifester'],
+    'manifeste': ['caché', 'secret', 'occulte', 'mystérieux'],
+    'caché': ['manifeste', 'visible', 'apparent', 'révélé'],
+    'visible': ['invisible', 'caché', 'occulte', 'secret'],
+    'invisible': ['visible', 'apparent', 'manifeste', 'évident'],
+    'apparaître': ['disparaître', 'cacher', 'voiler'],
+    'disparaître': ['apparaître', 'surgir', 'se montrer'],
+    'montrer': ['cacher', 'voiler', 'dissimuler'],
+    'voiler': ['dévoiler', 'révéler', 'montrer', 'découvrir'],
+    'dévoiler': ['voiler', 'cacher', 'dissimuler', 'recouvrir'],
+    'secret': ['public', 'manifeste', 'ouvert', 'révélé'],
+    'mystère': ['révélation', 'évidence', 'clarté'],
+    
+    // Foi et doute
+    'foi': ['doute', 'incrédulité', 'incroyance', 'scepticisme'],
+    'doute': ['foi', 'certitude', 'croyance', 'conviction'],
+    'croire': ['douter', 'mécroire', 'renier'],
+    'douter': ['croire', 'avoir foi', 'être certain'],
+    'certitude': ['doute', 'incertitude', 'hésitation'],
+    'confiance': ['méfiance', 'défiance', 'suspicion', 'doute'],
+    'méfiance': ['confiance', 'foi', 'assurance'],
+    'espoir': ['désespoir', 'désespérance', 'découragement'],
+    'désespoir': ['espoir', 'espérance', 'confiance'],
+    'espérance': ['désespérance', 'désespoir', 'découragement'],
+    'croyant': ['incroyant', 'infidèle', 'mécréant', 'athée'],
+    'fidèle': ['infidèle', 'renégat', 'apostat', 'traître'],
+    
+    // Amour et haine
+    'amour': ['haine', 'aversion', 'répulsion', 'hostilité', 'indifférence'],
+    'haine': ['amour', 'charité', 'affection', 'tendresse'],
+    'aimer': ['haïr', 'détester', 'abhorrer', 'mépriser'],
+    'haïr': ['aimer', 'chérir', 'adorer'],
+    'charité': ['égoïsme', 'avarice', 'cupidité', 'haine'],
+    'égoïsme': ['charité', 'altruisme', 'générosité', 'don'],
+    'dilection': ['aversion', 'répulsion', 'haine'],
+    'aversion': ['dilection', 'attraction', 'amour'],
+    'attraction': ['répulsion', 'aversion', 'rejet'],
+    'répulsion': ['attraction', 'attrait', 'amour'],
+    
+    // Bien et mal
+    'bien': ['mal', 'vice', 'péché', 'faute', 'crime'],
+    'mal': ['bien', 'vertu', 'bonté', 'justice'],
+    'bon': ['mauvais', 'méchant', 'pervers', 'vicieux'],
+    'mauvais': ['bon', 'bienfaisant', 'vertueux'],
+    'vertu': ['vice', 'péché', 'défaut', 'mal'],
+    'vice': ['vertu', 'qualité', 'bien', 'mérite'],
+    'juste': ['injuste', 'inique', 'inéquitable'],
+    'injuste': ['juste', 'équitable', 'droit'],
+    'justice': ['injustice', 'iniquité', 'inéquité'],
+    'injustice': ['justice', 'équité', 'droiture'],
+    'sainteté': ['péché', 'vice', 'corruption', 'impiété'],
+    'saint': ['pécheur', 'impie', 'profane', 'damné'],
+    'péché': ['sainteté', 'grâce', 'vertu', 'pureté'],
+    'pécheur': ['saint', 'juste', 'élu', 'bienheureux'],
+    'pur': ['impur', 'souillé', 'corrompu', 'contaminé'],
+    'impur': ['pur', 'innocent', 'immaculé', 'saint'],
+    'pureté': ['impureté', 'souillure', 'corruption'],
+    'impureté': ['pureté', 'innocence', 'sainteté'],
+    'innocent': ['coupable', 'criminel', 'fautif'],
+    'coupable': ['innocent', 'irréprochable', 'pur'],
+    
+    // Paix et guerre
+    'paix': ['guerre', 'conflit', 'combat', 'lutte', 'hostilité'],
+    'guerre': ['paix', 'harmonie', 'concorde', 'repos'],
+    'repos': ['combat', 'lutte', 'effort', 'agitation'],
+    'combat': ['repos', 'paix', 'trêve', 'calme'],
+    'calme': ['tempête', 'agitation', 'trouble', 'tumulte'],
+    'tempête': ['calme', 'sérénité', 'tranquillité', 'bonace'],
+    'tranquillité': ['trouble', 'agitation', 'tumulte', 'tourment'],
+    'trouble': ['tranquillité', 'calme', 'paix', 'sérénité'],
+    'quiétude': ['agitation', 'trouble', 'inquiétude', 'tourment'],
+    'agitation': ['quiétude', 'calme', 'repos', 'paix'],
+    'sérénité': ['tourment', 'angoisse', 'trouble', 'agitation'],
+    'tourment': ['sérénité', 'paix', 'repos', 'quiétude'],
+    
+    // Grandeur et petitesse
+    'grand': ['petit', 'infime', 'minuscule', 'humble'],
+    'petit': ['grand', 'immense', 'énorme', 'élevé'],
+    'grandeur': ['petitesse', 'humilité', 'bassesse', 'mesquinerie'],
+    'petitesse': ['grandeur', 'majesté', 'magnificence', 'élévation'],
+    'immense': ['infime', 'minuscule', 'microscopique'],
+    'infime': ['immense', 'énorme', 'gigantesque', 'colossal'],
+    'élevé': ['bas', 'inférieur', 'vil', 'abject'],
+    'bas': ['élevé', 'haut', 'sublime', 'supérieur'],
+    'haut': ['bas', 'inférieur', 'profond', 'abject'],
+    'sublime': ['vil', 'bas', 'abject', 'humble'],
+    'vil': ['sublime', 'noble', 'élevé', 'digne'],
+    'majesté': ['humilité', 'bassesse', 'petitesse'],
+    'gloire': ['abaissement', 'humiliation', 'opprobre', 'honte'],
+    'abaissement': ['gloire', 'élévation', 'exaltation', 'grandeur'],
+    'élévation': ['abaissement', 'chute', 'déchéance'],
+    'exaltation': ['humiliation', 'abaissement', 'avilissement'],
+    'humiliation': ['exaltation', 'gloire', 'honneur', 'dignité'],
+    
+    // Richesse et pauvreté
+    'riche': ['pauvre', 'indigent', 'démuni', 'dépouillé'],
+    'pauvre': ['riche', 'opulent', 'fortuné', 'nanti'],
+    'richesse': ['pauvreté', 'indigence', 'dénuement', 'misère'],
+    'pauvreté': ['richesse', 'opulence', 'fortune', 'abondance'],
+    'posséder': ['dépouiller', 'manquer', 'perdre', 'renoncer'],
+    'dépouiller': ['posséder', 'avoir', 'garder', 'accumuler'],
+    'avoir': ['manquer', 'perdre', 'être privé', 'renoncer'],
+    'manquer': ['avoir', 'posséder', 'abonder', 'regorger'],
+    'abondance': ['dénuement', 'pénurie', 'manque', 'privation'],
+    'dénuement': ['abondance', 'richesse', 'opulence', 'plénitude'],
+    'donner': ['recevoir', 'prendre', 'garder', 'retenir'],
+    'recevoir': ['donner', 'offrir', 'prodiguer'],
+    'perdre': ['gagner', 'trouver', 'acquérir', 'obtenir'],
+    'gagner': ['perdre', 'perdre', 'sacrifier', 'renoncer'],
+    'abandonner': ['garder', 'retenir', 'conserver', 'posséder'],
+    'garder': ['abandonner', 'perdre', 'donner', 'lâcher'],
+    
+    // Force et faiblesse
+    'fort': ['faible', 'débile', 'impuissant', 'fragile'],
+    'faible': ['fort', 'puissant', 'robuste', 'vigoureux'],
+    'force': ['faiblesse', 'débilité', 'impuissance', 'fragilité'],
+    'faiblesse': ['force', 'puissance', 'vigueur', 'robustesse'],
+    'puissance': ['impuissance', 'faiblesse', 'incapacité'],
+    'impuissance': ['puissance', 'force', 'capacité', 'pouvoir'],
+    'pouvoir': ['impuissance', 'incapacité', 'faiblesse'],
+    'capable': ['incapable', 'impuissant', 'inapte'],
+    'incapable': ['capable', 'apte', 'compétent'],
+    'victorieux': ['vaincu', 'défait', 'écrasé'],
+    'vaincu': ['victorieux', 'vainqueur', 'triomphant'],
+    'victoire': ['défaite', 'échec', 'revers'],
+    'défaite': ['victoire', 'triomphe', 'succès'],
+    
+    // Liberté et servitude
+    'libre': ['esclave', 'captif', 'prisonnier', 'enchaîné'],
+    'esclave': ['libre', 'affranchi', 'libéré', 'maître'],
+    'liberté': ['servitude', 'esclavage', 'captivité', 'asservissement'],
+    'servitude': ['liberté', 'affranchissement', 'indépendance'],
+    'libérer': ['enchaîner', 'asservir', 'capturer', 'emprisonner'],
+    'enchaîner': ['libérer', 'affranchir', 'délivrer', 'délier'],
+    'délivrer': ['captif', 'enchaîner', 'emprisonner'],
+    'captif': ['libre', 'délivré', 'libéré', 'affranchi'],
+    'autonomie': ['dépendance', 'subordination', 'asservissement'],
+    'dépendance': ['autonomie', 'indépendance', 'liberté'],
+    'indépendant': ['dépendant', 'subordonné', 'assujetti'],
+    'dépendant': ['indépendant', 'autonome', 'libre'],
+    
+    // Premier et dernier
+    'premier': ['dernier', 'ultime', 'final', 'terminal'],
+    'dernier': ['premier', 'initial', 'originel', 'primordial'],
+    'commencer': ['finir', 'terminer', 'achever', 'conclure'],
+    'finir': ['commencer', 'débuter', 'initier', 'inaugurer'],
+    'début': ['fin', 'terme', 'conclusion', 'achèvement'],
+    'fin': ['début', 'commencement', 'origine', 'principe'],
+    'origine': ['terme', 'fin', 'aboutissement', 'conclusion'],
+    'terme': ['origine', 'principe', 'source', 'commencement'],
+    'alpha': ['oméga', 'fin', 'terme'],
+    'oméga': ['alpha', 'origine', 'principe'],
+    'principe': ['fin', 'terme', 'aboutissement', 'conclusion'],
+    
+    // Maître et serviteur
+    'maître': ['serviteur', 'esclave', 'sujet', 'vassal'],
+    'serviteur': ['maître', 'seigneur', 'patron', 'chef'],
+    'seigneur': ['serviteur', 'vassal', 'sujet', 'serf'],
+    'commander': ['obéir', 'servir', 'se soumettre'],
+    'obéir': ['commander', 'ordonner', 'diriger', 'régner'],
+    'dominer': ['servir', 'obéir', 'se soumettre', 'être soumis'],
+    'servir': ['dominer', 'commander', 'régner', 'gouverner'],
+    'roi': ['esclave', 'sujet', 'serviteur', 'vassal'],
+    'souverain': ['sujet', 'vassal', 'serviteur'],
+    
+    // Intérieur et extérieur
+    'dedans': ['dehors', 'extérieur', 'hors', 'à l\'extérieur'],
+    'dehors': ['dedans', 'intérieur', 'au-dedans'],
+    'intérieur': ['extérieur', 'dehors', 'externe', 'superficiel'],
+    'extérieur': ['intérieur', 'intime', 'profond', 'dedans'],
+    'intime': ['lointain', 'distant', 'extérieur', 'étranger'],
+    'lointain': ['proche', 'intime', 'voisin', 'adjacent'],
+    'proche': ['lointain', 'éloigné', 'distant', 'reculé'],
+    'éloigné': ['proche', 'voisin', 'adjacent', 'contigu'],
+    'proximité': ['distance', 'éloignement', 'écart'],
+    'distance': ['proximité', 'voisinage', 'contiguïté'],
+    
+    // Unité et multiplicité
+    'un': ['multiple', 'divers', 'nombreux', 'pluriel'],
+    'multiple': ['un', 'unique', 'seul', 'singulier'],
+    'unité': ['multiplicité', 'diversité', 'pluralité'],
+    'multiplicité': ['unité', 'unicité', 'singularité'],
+    'unique': ['multiple', 'divers', 'pluriel', 'nombreux'],
+    'divers': ['unique', 'un', 'uniforme', 'identique'],
+    'simple': ['composé', 'complexe', 'multiple', 'composite'],
+    'composé': ['simple', 'élémentaire', 'pur', 'unique'],
+    'simplicité': ['complexité', 'complication', 'multiplicité'],
+    'complexité': ['simplicité', 'simplicité', 'pureté'],
+    'indivisible': ['divisible', 'sécable', 'séparable'],
+    'divisible': ['indivisible', 'insécable', 'inséparable'],
+    
+    // Parole et silence
+    'parole': ['silence', 'mutisme', 'taciturnité'],
+    'silence': ['parole', 'verbe', 'discours', 'bruit'],
+    'parler': ['taire', 'se taire', 'garder silence'],
+    'taire': ['parler', 'dire', 'prononcer', 'exprimer'],
+    'dire': ['taire', 'celer', 'cacher', 'dissimuler'],
+    'verbe': ['silence', 'mutisme', 'taciturnité'],
+    'exprimer': ['taire', 'cacher', 'dissimuler', 'occulter'],
+    'proclamer': ['cacher', 'taire', 'dissimuler', 'voiler'],
+    'muet': ['éloquent', 'bavard', 'loquace', 'disert'],
+    'éloquent': ['muet', 'silencieux', 'taciturne'],
+    
+    // Activité et passivité
+    'agir': ['subir', 'pâtir', 'souffrir', 'endurer'],
+    'subir': ['agir', 'faire', 'accomplir', 'œuvrer'],
+    'actif': ['passif', 'inactif', 'inerte', 'oisif'],
+    'passif': ['actif', 'agissant', 'actif', 'dynamique'],
+    'action': ['passion', 'inaction', 'repos', 'passivité'],
+    'passion': ['action', 'activité', 'agir'],
+    'faire': ['laisser', 'subir', 's\'abstenir', 'ne rien faire'],
+    'laisser': ['faire', 'agir', 'intervenir', 'œuvrer'],
+    'effort': ['abandon', 'relâchement', 'repos', 'passivité'],
+    'abandon': ['effort', 'résistance', 'lutte', 'combat'],
+    'volonté': ['abandon', 'résignation', 'soumission'],
+    'travailler': ['reposer', 'se reposer', 'chômer', 'cesser'],
+    'œuvre': ['grâce', 'don', 'cadeau', 'faveur'],
+    'grâce': ['œuvre', 'mérite', 'effort', 'travail'],
+    'mérite': ['grâce', 'don', 'faveur', 'cadeau'],
+    'don': ['mérite', 'œuvre', 'effort', 'récompense'],
+    
+    // Mouvement et repos
+    'mouvement': ['repos', 'immobilité', 'stase', 'arrêt'],
+    'repos': ['mouvement', 'agitation', 'activité', 'motion'],
+    'mobile': ['immobile', 'fixe', 'stationnaire', 'stable'],
+    'immobile': ['mobile', 'mouvant', 'agile', 'instable'],
+    'marcher': ['demeurer', 'rester', 's\'arrêter', 'stationner'],
+    'demeurer': ['partir', 'quitter', 'marcher', 'voyager'],
+    'aller': ['rester', 'demeurer', 'stationner', 's\'arrêter'],
+    'rester': ['partir', 'aller', 'quitter', 'se mouvoir'],
+    'avancer': ['reculer', 'arrêter', 'stopper', 'immobiliser'],
+    'arrêter': ['avancer', 'progresser', 'continuer', 'poursuivre'],
+    'chercher': ['trouver', 'posséder', 'avoir'],
+    'trouver': ['chercher', 'perdre', 'égarer'],
+    'errer': ['habiter', 'demeurer', 'résider', 'séjourner'],
+    'habiter': ['errer', 'vagabonder', 'voyager', 'nomadiser'],
+    'exil': ['demeure', 'patrie', 'foyer', 'résidence'],
+    'demeure': ['exil', 'départ', 'errance', 'nomadisme'],
+    'voyage': ['séjour', 'résidence', 'demeure', 'installation'],
+    'séjour': ['voyage', 'départ', 'exode', 'migration'],
+    
+    // Temps et éternité
+    'temps': ['éternité', 'intemporel', 'sempiternel'],
+    'éternité': ['temps', 'temporalité', 'durée', 'instant'],
+    'temporel': ['éternel', 'intemporel', 'sempiternel', 'permanent'],
+    'éternel': ['temporel', 'passager', 'éphémère', 'transitoire'],
+    'éphémère': ['éternel', 'permanent', 'durable', 'impérissable'],
+    'permanent': ['éphémère', 'passager', 'transitoire', 'fugace'],
+    'passager': ['permanent', 'durable', 'éternel', 'stable'],
+    'transitoire': ['permanent', 'stable', 'durable', 'immuable'],
+    'changeant': ['immuable', 'invariable', 'constant', 'stable'],
+    'immuable': ['changeant', 'variable', 'instable', 'fluctuant'],
+    'corruptible': ['incorruptible', 'impérissable', 'éternel'],
+    'incorruptible': ['corruptible', 'périssable', 'altérable'],
+    
+    // Terre et ciel
+    'terre': ['ciel', 'paradis', 'empyrée', 'firmament'],
+    'ciel': ['terre', 'monde', 'bas monde', 'ici-bas'],
+    'terrestre': ['céleste', 'éthéré', 'divin', 'paradisiaque'],
+    'céleste': ['terrestre', 'mondain', 'séculier', 'temporel'],
+    'matériel': ['spirituel', 'immatériel', 'incorporel'],
+    'spirituel': ['matériel', 'corporel', 'charnel', 'physique'],
+    'corporel': ['spirituel', 'incorporel', 'immatériel'],
+    'chair': ['esprit', 'âme', 'spirituel'],
+    'esprit': ['chair', 'corps', 'matière', 'corporel'],
+    'charnel': ['spirituel', 'incorporel', 'immatériel'],
+    'monde': ['ciel', 'paradis', 'royaume', 'éternité'],
+    'séculier': ['sacré', 'religieux', 'spirituel', 'divin'],
+    
+    // Sacré et profane
+    'sacré': ['profane', 'séculier', 'laïc', 'temporel'],
+    'profane': ['sacré', 'saint', 'consacré', 'béni'],
+    'saint': ['profane', 'pécheur', 'impie', 'sacrilège'],
+    'divin': ['humain', 'mortel', 'terrestre', 'mondain'],
+    'humain': ['divin', 'céleste', 'transcendant', 'surnaturel'],
+    'surnaturel': ['naturel', 'ordinaire', 'commun', 'profane'],
+    'naturel': ['surnaturel', 'miraculeux', 'prodigieux', 'divin'],
+    'transcendant': ['immanent', 'terrestre', 'mondain'],
+    'immanent': ['transcendant', 'au-delà', 'supérieur'],
+    
+    // Soi et autre
+    'soi': ['autre', 'autrui', 'étranger', 'prochain'],
+    'autre': ['soi', 'même', 'propre', 'identique'],
+    'je': ['tu', 'il', 'autre', 'autrui'],
+    'tu': ['je', 'moi', 'soi'],
+    'moi': ['toi', 'lui', 'autre', 'autrui'],
+    'toi': ['moi', 'je', 'soi'],
+    'propre': ['étranger', 'autre', 'autrui', 'externe'],
+    'étranger': ['familier', 'propre', 'intime', 'proche'],
+    'même': ['autre', 'différent', 'distinct', 'divers'],
+    'identité': ['altérité', 'différence', 'distinction'],
+    'altérité': ['identité', 'mêmeté', 'similitude'],
+    
+    // Vérité et erreur
+    'vrai': ['faux', 'erroné', 'inexact', 'mensonger'],
+    'faux': ['vrai', 'véridique', 'exact', 'authentique'],
+    'vérité': ['erreur', 'mensonge', 'fausseté', 'illusion'],
+    'erreur': ['vérité', 'exactitude', 'justesse', 'véracité'],
+    'mensonge': ['vérité', 'véracité', 'sincérité', 'franchise'],
+    'authentique': ['faux', 'illusoire', 'trompeur', 'factice'],
+    'illusoire': ['réel', 'authentique', 'véritable', 'effectif'],
+    'réel': ['apparent', 'illusoire', 'fictif', 'chimérique'],
+    'apparent': ['réel', 'véritable', 'authentique', 'effectif'],
+    'être': ['paraître', 'sembler', 'apparaître'],
+    'paraître': ['être', 'exister réellement'],
+    
+    // Joie et tristesse
+    'joie': ['tristesse', 'douleur', 'peine', 'affliction', 'chagrin'],
+    'tristesse': ['joie', 'allégresse', 'gaieté', 'félicité'],
+    'douleur': ['joie', 'plaisir', 'délice', 'félicité'],
+    'consolation': ['désolation', 'affliction', 'détresse'],
+    'désolation': ['consolation', 'réconfort', 'soulagement'],
+    'allégresse': ['affliction', 'tristesse', 'désolation', 'peine'],
+    'affliction': ['allégresse', 'joie', 'consolation', 'félicité'],
+    'bonheur': ['malheur', 'infortune', 'misère', 'détresse'],
+    'malheur': ['bonheur', 'félicité', 'béatitude', 'prospérité'],
+    'béatitude': ['souffrance', 'misère', 'tourment', 'affliction'],
+    'souffrance': ['béatitude', 'joie', 'délice', 'volupté'],
+    
+    // Souffrance et gloire
+    'souffrance': ['gloire', 'béatitude', 'joie', 'honneur'],
+    'gloire': ['souffrance', 'humiliation', 'opprobre', 'ignominie'],
+    'croix': ['gloire', 'triomphe', 'résurrection', 'couronne'],
+    'passion': ['résurrection', 'gloire', 'triomphe', 'victoire'],
+    'résurrection': ['passion', 'mort', 'crucifixion', 'tombeau'],
+    
+    // Désir et détachement
+    'désir': ['détachement', 'renoncement', 'abandon', 'indifférence'],
+    'détachement': ['désir', 'attachement', 'convoitise', 'avidité'],
+    'vouloir': ['renoncer', 'abandonner', 'lâcher', 'délaisser'],
+    'renoncer': ['désirer', 'vouloir', 'convoiter', 'ambitionner'],
+    'convoiter': ['renoncer', 'abandonner', 'délaisser', 'mépriser'],
+    'attacher': ['détacher', 'délier', 'libérer', 'affranchir'],
+    'détacher': ['attacher', 'lier', 'enchaîner', 'fixer'],
+    'tenir': ['lâcher', 'abandonner', 'relâcher', 'libérer'],
+    'lâcher': ['tenir', 'saisir', 'agripper', 'retenir'],
+    
+    // Parler et taire (apophatisme)
+    'affirmer': ['nier', 'démentir', 'réfuter', 'contester'],
+    'nier': ['affirmer', 'confirmer', 'attester', 'certifier'],
+    'indicible': ['exprimable', 'dicible', 'énonçable'],
+    'innommable': ['nommable', 'désignable', 'définissable'],
+    'inexprimable': ['exprimable', 'dicible', 'énonçable'],
+    'nommer': ['innommable', 'indicible', 'ineffable'],
+    
+    // Humilité et orgueil
+    'humble': ['orgueilleux', 'hautain', 'fier', 'arrogant', 'superbe'],
+    'orgueilleux': ['humble', 'modeste', 'effacé', 'simple'],
+    'humilité': ['orgueil', 'vanité', 'fierté', 'arrogance', 'superbe'],
+    'orgueil': ['humilité', 'modestie', 'simplicité', 'effacement'],
+    'modestie': ['vanité', 'orgueil', 'suffisance', 'prétention'],
+    'vanité': ['humilité', 'modestie', 'simplicité'],
+    
+    // Ouverture et fermeture
+    'ouvrir': ['fermer', 'clore', 'boucher', 'obstruer'],
+    'fermer': ['ouvrir', 'ouvrir', 'déboucher', 'dégager'],
+    'ouvert': ['fermé', 'clos', 'bouché', 'obstrué'],
+    'fermé': ['ouvert', 'béant', 'accessible', 'disponible'],
+    'accueillir': ['refuser', 'rejeter', 'repousser', 'écarter'],
+    'refuser': ['accueillir', 'accepter', 'recevoir', 'agréer'],
+    'rejeter': ['recevoir', 'accepter', 'accueillir', 'adopter'],
+    
+    // Sommeil et éveil
+    'éveil': ['sommeil', 'assoupissement', 'torpeur', 'léthargie'],
+    'sommeil': ['éveil', 'veille', 'vigilance', 'insomnie'],
+    'éveillé': ['endormi', 'assoupi', 'somnolent'],
+    'endormi': ['éveillé', 'vigilant', 'alerte', 'lucide'],
+    'veille': ['sommeil', 'assoupissement', 'léthargie'],
+    'vigilance': ['torpeur', 'somnolence', 'assoupissement'],
+    'torpeur': ['vigilance', 'éveil', 'lucidité', 'vivacité'],
+    'lucide': ['aveugle', 'endormi', 'inconscient', 'confus'],
+    
+    // Monter et descendre
+    'monter': ['descendre', 'tomber', 'choir', 'déchoir'],
+    'descendre': ['monter', 'gravir', 'escalader', 's\'élever'],
+    'ascension': ['descente', 'chute', 'déchéance', 'abaissement'],
+    'descente': ['ascension', 'montée', 'élévation', 'ascension'],
+    'élever': ['abaisser', 'rabaisser', 'humilier', 'avilir'],
+    'abaisser': ['élever', 'hausser', 'exhausser', 'exalter'],
+    'grimper': ['tomber', 'chuter', 'dégringoler', 'choir'],
+    'tomber': ['monter', 'grimper', 's\'élever', 'se dresser'],
+    'lever': ['baisser', 'abaisser', 'descendre', 'rabattre'],
+    'baisser': ['lever', 'élever', 'hausser', 'dresser'],
+    'chute': ['ascension', 'élévation', 'montée', 'essor'],
+    
+    // Rassembler et disperser
+    'rassembler': ['disperser', 'éparpiller', 'disséminer', 'répandre'],
+    'disperser': ['rassembler', 'réunir', 'grouper', 'concentrer'],
+    'unir': ['séparer', 'diviser', 'désunir', 'dissocier'],
+    'séparer': ['unir', 'joindre', 'réunir', 'rassembler'],
+    'joindre': ['séparer', 'disjoindre', 'diviser', 'écarter'],
+    'diviser': ['unir', 'réunir', 'joindre', 'rassembler'],
+    'réunir': ['séparer', 'éparpiller', 'disperser', 'dissocier'],
+    'éparpiller': ['rassembler', 'réunir', 'concentrer', 'grouper'],
+    'concentrer': ['disperser', 'éparpiller', 'disséminer'],
+    'dissiper': ['concentrer', 'rassembler', 'condenser'],
+    
+    // Remplir et vider
+    'remplir': ['vider', 'évacuer', 'épuiser', 'tarir'],
+    'vider': ['remplir', 'emplir', 'combler', 'garnir'],
+    'combler': ['creuser', 'vider', 'épuiser', 'tarir'],
+    'creuser': ['combler', 'remplir', 'boucher', 'emplir'],
+    'garnir': ['dépouiller', 'dégarnir', 'vider', 'dénuder'],
+    'dépouiller': ['garnir', 'revêtir', 'habiller', 'parer'],
+    'emplir': ['vider', 'évacuer', 'épuiser', 'tarir'],
+    'saturer': ['épuiser', 'vider', 'tarir', 'assécher'],
+    'épuiser': ['remplir', 'combler', 'alimenter', 'fournir'],
+    
+    // Construire et détruire
+    'construire': ['détruire', 'démolir', 'abattre', 'raser'],
+    'détruire': ['construire', 'édifier', 'bâtir', 'ériger'],
+    'édifier': ['démolir', 'détruire', 'abattre', 'renverser'],
+    'démolir': ['édifier', 'construire', 'ériger', 'bâtir'],
+    'bâtir': ['ruiner', 'détruire', 'démolir', 'abattre'],
+    'ruiner': ['édifier', 'construire', 'bâtir', 'restaurer'],
+    'créer': ['anéantir', 'détruire', 'annihiler', 'abolir'],
+    'fonder': ['renverser', 'détruire', 'abolir', 'ruiner'],
+    'renverser': ['fonder', 'établir', 'ériger', 'édifier'],
+    
+    // Lier et délier
+    'lier': ['délier', 'détacher', 'libérer', 'dénouer'],
+    'délier': ['lier', 'attacher', 'nouer', 'enchaîner'],
+    'attacher': ['détacher', 'délier', 'libérer', 'dégager'],
+    'détacher': ['attacher', 'lier', 'fixer', 'amarrer'],
+    'nouer': ['dénouer', 'délier', 'défaire', 'détacher'],
+    'dénouer': ['nouer', 'lier', 'attacher', 'entrelacer'],
+    'retenir': ['relâcher', 'lâcher', 'libérer', 'délivrer'],
+    'relâcher': ['retenir', 'maintenir', 'garder', 'tenir'],
+    
+    // Nouveau et ancien
+    'nouveau': ['ancien', 'vieux', 'antique', 'archaïque'],
+    'ancien': ['nouveau', 'neuf', 'récent', 'moderne'],
+    'neuf': ['vieux', 'usé', 'ancien', 'vétuste'],
+    'vieux': ['neuf', 'nouveau', 'jeune', 'récent'],
+    'recommencer': ['finir', 'terminer', 'achever', 'conclure'],
+    'renaissance': ['mort', 'fin', 'déclin', 'vieillesse'],
+    'vieillesse': ['jeunesse', 'renaissance', 'renouveau'],
+    'innovation': ['tradition', 'conservation', 'habitude'],
+    'tradition': ['innovation', 'renouvellement', 'modernité']
+};
 
             let antonymes = antonymesMap[keyword] || [];
 
@@ -671,10 +1376,50 @@
             const prompt = `Tu es un expert en spiritualité chrétienne et musulmane, spécialisé dans l'identification des paradoxes mystiques.
 
 DÉFINITION D'UN PARADOXE SPIRITUEL :
-Un paradoxe spirituel présente une vérité qui défie la logique ordinaire, où deux réalités apparemment contradictoires coexistent ou se révèlent mutuellement. Exemples :
-- "Mourir pour vivre" (la mort spirituelle mène à la vraie vie)
-- "Être plein en se vidant" (le dépouillement conduit à la plénitude)
-- "Trouver en perdant" (perdre son ego révèle le vrai Soi)
+Un paradoxe spirituel présente une vérité qui défie la logique ordinaire, où deux réalités apparemment contradictoires coexistent ou se révèlent mutuellement. Ce n'est pas une simple juxtaposition d'antonymes, mais une tension dialectique où l'un révèle l'autre.
+
+EXEMPLES DE VRAIS PARADOXES SPIRITUELS :
+
+Tradition chrétienne :
+- "Mourir pour vivre" (la mort à soi-même mène à la vraie vie)
+- "Qui veut sauver sa vie la perdra, qui la perd la trouve" (Évangile)
+- "Être plein en se vidant" (le dépouillement conduit à la plénitude divine)
+- "Les premiers seront les derniers" (le renversement évangélique)
+- "Ma puissance se déploie dans la faiblesse" (Paul)
+- "Pour monter, il faut descendre" (humilité comme ascension)
+- "La nuit obscure illumine" (ténèbres mystiques qui éclairent l'âme)
+- "Plus on possède Dieu, moins on Le possède" (mystique apophatique)
+- "Être roi en devenant serviteur" (le Christ-Roi servant)
+- "Tout avoir en n'ayant rien" (pauvreté évangélique)
+- "Connaître en ne sachant rien" (docte ignorance)
+- "S'anéantir pour être" (kénose)
+
+Tradition musulmane/soufie :
+- "Mourir avant de mourir" (fana, l'extinction mystique)
+- "Périr pour subsister" (fana/baqa)
+- "Être absent pour être présent" (à Dieu)
+- "Se perdre pour se trouver" (dissolution du nafs)
+- "L'éloignement est proximité" (paradoxe de la distance divine)
+- "Rien n'existe que Lui, pourtant tout existe" (tawhid)
+- "L'ivresse par la sobriété" (ivresse spirituelle dans la lucidité)
+- "Devenir esclave pour être libre" (servitude envers Dieu = liberté)
+
+Paradoxes transversaux :
+- "Parler par le silence" (éloquence du silence contemplatif)
+- "Agir par l'abandon" (l'action devient grâce)
+- "Posséder par le renoncement" (détachement = vraie possession)
+- "Voir en devenant aveugle" (aveuglement physique, vision spirituelle)
+- "Comprendre l'incompréhensible" (mystère qui se révèle en restant mystère)
+- "S'unir en restant distinct" (union mystique sans confusion)
+- "Le chemin s'éloigne en s'approchant" (plus on avance, plus le but semble lointain)
+
+CE QUI N'EST PAS UN PARADOXE :
+- Simple présence d'antonymes : "Il y a de la lumière et des ténèbres dans le monde"
+- Opposition sans tension révélatrice : "Parfois je suis joyeux, parfois triste"
+- Contraste descriptif : "Le jour succède à la nuit"
+- Dualisme banal : "Le bien combat le mal"
+
+Un vrai paradoxe implique que les deux pôles se NÉCESSITENT mutuellement et révèlent une vérité plus profonde que leur apparente contradiction.
 
 NE SONT PAS des paradoxes : simple présence d'antonymes (lumière/ténèbres, joie/tristesse) sans tension dialectique profonde.
 
