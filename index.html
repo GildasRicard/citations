@@ -383,15 +383,15 @@
         // Configuration du proxy HuggingFace
         const PROXY_URL = "https://gildasr-dictionnaires.hf.space/api/chat";
 
-        // Modèles OpenRouter (priorité aux modèles gratuits et performants)
+        // Modèles OpenRouter (sélection plus robuste et diversifiée)
         const OPENROUTER_MODELS = [
             "google/gemini-2.0-flash-exp:free",
-            "deepseek/deepseek-r1:free",
-            "google/learnlm-1.5-pro-experimental:free",
-            "mistralai/pixtral-12b:free",
-            "microsoft/phi-3-medium-128k-instruct:free",
-            "google/gemma-2-9b-it:free",
-            "anthropic/claude-3-haiku"
+            "mistralai/mistral-7b-instruct:free",
+            "meta-llama/llama-3.1-8b-instruct:free",
+            "qwen/qwen-2.5-72b-instruct",
+            "anthropic/claude-3-haiku",
+            "deepseek/deepseek-chat",
+            "google/gemini-flash-1.5"
         ];
 
         const DELAY_BETWEEN_MODELS = 3000;  // 3 secondes
@@ -598,7 +598,10 @@
                 ['lumière', 'ténèbres'], ['lumière', 'obscurité'], ['bien', 'mal'],
                 ['vie', 'mort'], ['amour', 'haine'], ['paix', 'guerre'],
                 ['céleste', 'terrestre'], ['éternel', 'éphémère'], ['sacré', 'profane'],
-                ['foi', 'doute'], ['espoir', 'désespoir'], ['tout', 'rien']
+                ['foi', 'doute'], ['espoir', 'désespoir'], ['tout', 'rien'],
+                ['visible', 'invisible'], ['connu', 'inconnu'], ['présence', 'absence'],
+                ['silence', 'parole'], ['unité', 'multiplicité'], ['grand', 'petit'],
+                ['dedans', 'dehors'], ['soi', 'autre'], ['vrai', 'faux']
             ];
 
             motsParadoxaux.forEach(paire => {
@@ -664,21 +667,22 @@
             // Préparer le texte pour l'IA (limiter la taille)
             const candidateTexts = candidates.map(c => c.phrase).join('\n\n');
 
-            const prompt = `Tu es un expert en spiritualité chrétienne et musulmane. Voici des passages d'un texte.
+            const prompt = `Tu es un expert mondial en mystique et spiritualité (Soufisme, Maître Eckhart, Ghazâlî, Jean de la Croix, Thérèse d'Avila, etc.).
+            
+TÂCHE : Analyse les passages suivants pour extraire exactement ${numCitations} citations hautement SPIRITUELLES et PARADOXALES.
 
-TÂCHE : Sélectionne exactement ${numCitations} citations qui :
-1. Parlent de spiritualité chrétienne OU musulmane
-2. Contiennent un ou plusieurs PARADOXES (contradictions apparentes, vérités qui semblent s'opposer)
-${keyword ? `3. Incluent de préférence le mot "${keyword}" et son contraire\n` : ''}
+DÉFINITION D'UN PARADOXE SPIRITUEL : Une vérité profonde exprimée par une contradiction apparente ou une opposition de termes. 
+Exemples : "L'obscurité est une lumière éblouissante", "L'union dans la séparation", "Le silence qui parle plus fort que les mots", "Être seul au milieu de la foule".
 
-PASSAGES :
+PASSAGES À ANALYSER :
 ${candidateTexts}
 
-INSTRUCTIONS :
-- Réponds UNIQUEMENT avec les citations sélectionnées, une par ligne
-- Chaque citation doit être une phrase complète ou un court passage cohérent
-- Ne numérote pas, ne commente pas, ne rajoute rien
-- Si tu ne trouves pas ${numCitations} citations paradoxales, donne celles que tu trouves`;
+INSTRUCTIONS STRICTES :
+1. Sélectionne uniquement des passages qui traitent de la relation à Dieu, à l'âme, à la connaissance divine ou à la vérité spirituelle.
+2. Privilégie absolument les citations contenant des paradoxes frappants et profonds${keyword ? ` impliquant le thème "${keyword}"` : ''}.
+3. Réponds UNIQUEMENT avec les citations sélectionnées, une par ligne.
+4. Chaque citation doit être une phrase complète ou un court paragraphe cohérent (maximum 300 caractères).
+5. NE RAJOUTE AUCUN COMMENTAIRE, AUCUNE NUMÉROTATION ET AUCUNE INTRODUCTION.`;
 
             let attempts = 0;
             currentModelIndex = 0;
