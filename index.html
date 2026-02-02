@@ -1,229 +1,341 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extracteur de Citations Spirituelles (avec IA)</title>
     <style>
+        :root {
+            --primary: #764ba2;
+            --secondary: #667eea;
+            --accent: #ff9a9e;
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --text-main: #2d3436;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Outfit', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
+            padding: 40px 20px;
+            color: var(--text-main);
         }
-        
+
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         h1 {
-            color: #764ba2;
+            color: var(--primary);
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin-bottom: 40px;
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
         }
-        
+
         .upload-section {
-            background: #f8f9fa;
-            border: 3px dashed #667eea;
-            border-radius: 15px;
-            padding: 30px;
+            background: rgba(102, 126, 234, 0.05);
+            border: 3px dashed var(--secondary);
+            border-radius: 25px;
+            padding: 40px;
             text-align: center;
-            margin-bottom: 30px;
-            transition: all 0.3s;
+            margin-bottom: 40px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        
+
         .upload-section:hover {
-            border-color: #764ba2;
-            background: #f0f0f5;
+            border-color: var(--primary);
+            background: rgba(118, 75, 162, 0.1);
+            transform: translateY(-5px);
         }
-        
+
         input[type="file"] {
             display: none;
         }
-        
+
         .file-label {
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px 40px;
+            padding: 18px 45px;
             border-radius: 50px;
             cursor: pointer;
-            font-size: 1.1em;
-            transition: transform 0.2s;
+            font-size: 1.2em;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);
+            transition: all 0.3s;
         }
-        
+
         .file-label:hover {
             transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(118, 75, 162, 0.4);
         }
-        
+
         .file-name {
             margin-top: 15px;
             color: #666;
             font-style: italic;
         }
-        
+
         .options-section {
-            background: #e8f4f8;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-        
+
         .option-group {
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
-        
+
+        .option-group.full-width {
+            grid-column: span 2;
+        }
+
         .option-group label {
             display: block;
-            margin-bottom: 10px;
-            color: #333;
-            font-weight: bold;
+            margin-bottom: 12px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95em;
         }
-        
-        input[type="text"], input[type="number"] {
-            padding: 10px;
-            border: 2px solid #667eea;
-            border-radius: 25px;
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 15px 25px;
+            border: 2px solid #eee;
+            border-radius: 15px;
             width: 100%;
-            max-width: 400px;
             font-size: 1em;
-            text-align: center;
+            transition: all 0.3s;
+            outline: none;
         }
-        
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
         .checkbox-container {
             display: flex;
             align-items: center;
-            gap: 10px;
-            justify-content: center;
+            gap: 15px;
+            background: #f0f4f8;
+            padding: 15px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
         }
-        
+
+        .checkbox-container:hover {
+            background: #e2e8f0;
+        }
+
         input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
+            accent-color: var(--primary);
             cursor: pointer;
         }
-        
+
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 50px;
+            padding: 18px 60px;
             border-radius: 50px;
-            font-size: 1.1em;
+            font-size: 1.25em;
+            font-weight: 700;
             cursor: pointer;
             display: block;
-            margin: 20px auto;
-            transition: transform 0.2s;
+            margin: 30px auto;
+            box-shadow: 0 10px 25px rgba(118, 75, 162, 0.3);
+            transition: all 0.3s;
         }
-        
-        button:hover {
-            transform: scale(1.05);
+
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(118, 75, 162, 0.4);
         }
-        
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
         button:disabled {
-            opacity: 0.5;
+            background: #ccc;
             cursor: not-allowed;
+            box-shadow: none;
         }
-        
+
         .citations-container {
             margin-top: 40px;
         }
-        
+
         .citation {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-left: 5px solid #764ba2;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: white;
+            border-left: 8px solid var(--primary);
+            padding: 35px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
             animation: fadeIn 0.5s ease-in;
         }
-        
+
+        .citation:hover {
+            transform: scale(1.02);
+        }
+
+        .citation::before {
+            content: '“';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 5em;
+            color: rgba(118, 75, 162, 0.05);
+            font-family: serif;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         .citation-text {
-            font-size: 1.2em;
-            line-height: 1.6;
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 1.3em;
+            line-height: 1.7;
+            color: #2d3436;
+            margin-bottom: 20px;
             font-style: italic;
+            position: relative;
+            z-index: 1;
         }
-        
+
         .citation-context {
             font-size: 0.9em;
-            color: #666;
-            border-top: 1px solid #ccc;
-            padding-top: 10px;
-            margin-top: 10px;
+            color: #888;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
+
         .loading {
             text-align: center;
-            color: #764ba2;
-            font-size: 1.2em;
-            margin: 20px 0;
+            padding: 20px;
+            animation: pulse 1.5s infinite;
         }
-        
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
         .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 10px;
+            background: #fff5f5;
+            color: #d63031;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #fab1a0;
             margin: 20px 0;
             text-align: center;
+            font-weight: 600;
         }
-        
+
         .info {
-            background: #e3f2fd;
-            color: #1565c0;
-            padding: 15px;
-            border-radius: 10px;
+            background: #edf2ff;
+            color: #4c6ef5;
+            padding: 20px;
+            border-radius: 15px;
             margin: 20px 0;
             text-align: center;
+            font-weight: 600;
         }
-        
+
         .ai-badge {
-            display: inline-block;
-            background: #4CAF50;
+            background: linear-gradient(135deg, #00b09b, #96c93d);
             color: white;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75em;
-            margin-left: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
         }
-        
+
         .status-indicator {
             font-size: 0.9em;
             color: #666;
             margin-top: 10px;
         }
+
+        @media (max-width: 600px) {
+            .options-section {
+                grid-template-columns: 1fr;
+            }
+
+            .option-group.full-width {
+                grid-column: span 1;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>📖 Extracteur de Citations Spirituelles</h1>
-        
+
         <div class="upload-section">
             <label for="fileInput" class="file-label">
                 Sélectionner un fichier (PDF ou TXT)
@@ -231,26 +343,29 @@
             <input type="file" id="fileInput" accept=".pdf,.txt,.epub">
             <div class="file-name" id="fileName">Aucun fichier sélectionné</div>
         </div>
-        
+
         <div class="options-section">
-            <div class="option-group">
-                <label for="keywordInput">Mot-clé pour chercher un paradoxe (optionnel) :</label>
-                <input type="text" id="keywordInput" placeholder="Ex: lumière, foi, amour...">
+            <div class="option-group full-width">
+                <label for="keywordInput">Thème ou mot-clé pour chercher un paradoxe (optionnel) :</label>
+                <input type="text" id="keywordInput" placeholder="Ex: lumière, foi, silence, mort...">
             </div>
-            
+
             <div class="option-group">
-                <label for="numCitations">Nombre de citations à extraire :</label>
+                <label for="numCitations">Quantité de citations :</label>
                 <input type="number" id="numCitations" value="5" min="1" max="20">
             </div>
-            
-            <div class="option-group checkbox-container">
-                <input type="checkbox" id="useAI">
-                <label for="useAI" style="margin: 0;">Utiliser l'IA pour améliorer la sélection <span class="ai-badge">IA</span></label>
+
+            <div class="option-group">
+                <label>&nbsp;</label>
+                <label for="useAI" class="checkbox-container">
+                    <input type="checkbox" id="useAI" checked>
+                    <span>Utiliser l'IA <span class="ai-badge">Premium</span></span>
+                </label>
             </div>
         </div>
-        
+
         <button id="extractBtn" disabled>Extraire Citations</button>
-        
+
         <div id="messageContainer"></div>
         <div id="citationsContainer" class="citations-container"></div>
     </div>
@@ -258,32 +373,32 @@
     <!-- PDF.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    
+
     <script>
         // Configuration PDF.js
         if (typeof pdfjsLib !== 'undefined') {
             pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
         }
-        
+
         // Configuration du proxy HuggingFace
         const PROXY_URL = "https://gildasr-dictionnaires.hf.space/api/chat";
-        
-        // Modèles OpenRouter
+
+        // Modèles OpenRouter (priorité aux modèles gratuits et performants)
         const OPENROUTER_MODELS = [
-            "deepseek/deepseek-r1-0528:free",
-            "google/gemma-3-27b-it:free",
-            "openai/gpt-oss-120b:free",
-            "google/gemma-3-12b-it:free",
-            "mistralai/devstral-2512:free",
-            "anthropic/claude-3-haiku",
-            "google/gemini-flash-1.5"
+            "google/gemini-2.0-flash-exp:free",
+            "deepseek/deepseek-r1:free",
+            "google/learnlm-1.5-pro-experimental:free",
+            "mistralai/pixtral-12b:free",
+            "microsoft/phi-3-medium-128k-instruct:free",
+            "google/gemma-2-9b-it:free",
+            "anthropic/claude-3-haiku"
         ];
-        
+
         const DELAY_BETWEEN_MODELS = 3000;  // 3 secondes
         const DELAY_AFTER_ERROR = 5000;     // 5 secondes
         const API_TIMEOUT = 60000;          // 60 secondes
         const MAX_ATTEMPTS_PER_BOOK = 12;
-        
+
         // Vocabulaire religieux pour détection
         const vocabulaireReligieux = [
             'dieu', 'seigneur', 'christ', 'jésus', 'esprit', 'saint', 'âme', 'foi', 'grâce',
@@ -295,12 +410,12 @@
             'spirituel', 'mystique', 'contempl', 'méditation', 'illumination', 'révélation',
             'transcendance', 'sagesse', 'vérité', 'lumière', 'ténèbres'
         ];
-        
+
         let fileContent = '';
         let selectedFile = null;
         let pageIndex = [];
         let currentModelIndex = 0;
-        
+
         const fileInput = document.getElementById('fileInput');
         const fileName = document.getElementById('fileName');
         const extractBtn = document.getElementById('extractBtn');
@@ -309,7 +424,7 @@
         const keywordInput = document.getElementById('keywordInput');
         const numCitationsInput = document.getElementById('numCitations');
         const useAICheckbox = document.getElementById('useAI');
-        
+
         fileInput.addEventListener('change', async (e) => {
             selectedFile = e.target.files[0];
             if (selectedFile) {
@@ -319,16 +434,16 @@
                 messageContainer.innerHTML = '';
             }
         });
-        
+
         extractBtn.addEventListener('click', async () => {
             if (!selectedFile) return;
-            
+
             showMessage('Lecture du fichier...', 'loading');
             extractBtn.disabled = true;
-            
+
             try {
                 pageIndex = [];
-                
+
                 if (selectedFile.name.toLowerCase().endsWith('.pdf')) {
                     fileContent = await extractTextFromPDF(selectedFile);
                 } else if (selectedFile.name.toLowerCase().endsWith('.txt')) {
@@ -336,66 +451,66 @@
                 } else if (selectedFile.name.toLowerCase().endsWith('.epub')) {
                     fileContent = await extractTextFromEPUB(selectedFile);
                 }
-                
+
                 if (!fileContent || fileContent.trim().length === 0) {
                     showMessage('Le fichier semble vide ou n\'a pas pu être lu.', 'error');
                     extractBtn.disabled = false;
                     return;
                 }
-                
+
                 const keyword = keywordInput.value.trim();
                 const numCitations = parseInt(numCitationsInput.value) || 5;
                 const useAI = useAICheckbox.checked;
-                
+
                 let citations;
                 if (useAI) {
                     citations = await extractCitationsWithAI(fileContent, keyword, numCitations);
                 } else {
                     citations = extractCitations(fileContent, keyword, numCitations);
                 }
-                
+
                 displayCitations(citations, useAI);
                 extractBtn.disabled = false;
-                
+
             } catch (error) {
                 showMessage('Erreur lors du traitement: ' + error.message, 'error');
                 extractBtn.disabled = false;
             }
         });
-        
+
         async function extractTextFromPDF(file) {
             const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             let fullText = '';
             let charCount = 0;
-            
+
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const textContent = await page.getTextContent();
                 const pageText = textContent.items.map(item => item.str).join(' ') + '\n';
-                
+
                 pageIndex.push({
                     pageNumber: i,
                     startChar: charCount,
                     endChar: charCount + pageText.length
                 });
-                
+
                 fullText += pageText;
                 charCount += pageText.length;
             }
-            
+
             return fullText;
         }
-        
+
         async function extractTextFromTXT(file) {
             return await file.text();
         }
-        
+
         async function extractTextFromEPUB(file) {
             const arrayBuffer = await file.arrayBuffer();
             const zip = await JSZip.loadAsync(arrayBuffer);
             let fullText = '';
-            
+
             for (let filename in zip.files) {
                 if (filename.match(/\.(html|xhtml|htm)$/i)) {
                     const content = await zip.files[filename].async('string');
@@ -403,15 +518,15 @@
                     fullText += textOnly + '\n';
                 }
             }
-            
+
             return fullText;
         }
-        
+
         function extractCitations(text, keyword = '', numCitations = 5) {
             const phraseRegex = /[^.!?]+[.!?]+/g;
             let match;
             const phrasesAvecPosition = [];
-            
+
             while ((match = phraseRegex.exec(text)) !== null) {
                 const phrase = match[0].trim();
                 if (phrase.length > 50 && phrase.length < 500) {
@@ -421,79 +536,92 @@
                     });
                 }
             }
-            
+
             let phrasesReligieuses = phrasesAvecPosition.filter(item => {
                 const phraseLower = item.phrase.toLowerCase();
                 return vocabulaireReligieux.some(mot => phraseLower.includes(mot));
             });
-            
+
             if (keyword && keyword.length > 0) {
                 const keywordLower = keyword.toLowerCase();
                 const antonymes = getAntonyms(keywordLower);
-                
-                phrasesReligieuses = phrasesReligieuses.filter(item => {
+
+                // On privilégie les phrases avec le keyword
+                let keywordCandidates = phrasesReligieuses.filter(item => {
                     const phraseLower = item.phrase.toLowerCase();
-                    const hasKeyword = phraseLower.includes(keywordLower);
-                    const hasAntonym = antonymes.some(ant => phraseLower.includes(ant));
-                    return hasKeyword && hasAntonym;
+                    return phraseLower.includes(keywordLower);
                 });
-                
-                if (phrasesReligieuses.length === 0) {
-                    showMessage(`Aucune citation paradoxale trouvée avec le mot "${keyword}".`, 'info');
-                    return [];
+
+                // Si on a des candidats avec le keyword, on cherche s'ils ont aussi un antonyme (paradoxe fort)
+                if (keywordCandidates.length > 0) {
+                    const paradoxCandidates = keywordCandidates.filter(item => {
+                        const phraseLower = item.phrase.toLowerCase();
+                        return antonymes.some(ant => phraseLower.includes(ant));
+                    });
+
+                    // Si on a des paradoxes explicites, on les utilise en priorité
+                    if (paradoxCandidates.length > 0) {
+                        phrasesReligieuses = paradoxCandidates;
+                    } else {
+                        // Sinon on garde les phrases avec le keyword, l'IA fera le tri
+                        phrasesReligieuses = keywordCandidates;
+                    }
+                } else if (phrasesReligieuses.length > numCitations * 3) {
+                    // Si on n'a rien avec le keyword mais beaucoup de religieux,
+                    // on garde tout et on laisse le scoring paradoxal naturel agir
                 }
             }
-            
+
             if (phrasesReligieuses.length === 0) {
                 showMessage('Aucune citation avec vocabulaire religieux trouvée.', 'info');
                 return [];
             }
-            
+
             const phrasesAvecScore = phrasesReligieuses.map(item => {
                 const score = calculateParadoxScore(item.phrase, keyword);
-                return { 
-                    phrase: item.phrase, 
+                return {
+                    phrase: item.phrase,
                     score: score,
-                    position: item.position 
+                    position: item.position
                 };
             });
-            
+
             phrasesAvecScore.sort((a, b) => b.score - a.score);
             return phrasesAvecScore.slice(0, numCitations);
         }
-        
+
         function calculateParadoxScore(phrase, keyword = '') {
             const phraseLower = phrase.toLowerCase();
             let score = 0;
-            
+
             const motsParadoxaux = [
                 ['lumière', 'ténèbres'], ['lumière', 'obscurité'], ['bien', 'mal'],
                 ['vie', 'mort'], ['amour', 'haine'], ['paix', 'guerre'],
                 ['céleste', 'terrestre'], ['éternel', 'éphémère'], ['sacré', 'profane'],
                 ['foi', 'doute'], ['espoir', 'désespoir'], ['tout', 'rien']
             ];
-            
+
             motsParadoxaux.forEach(paire => {
                 if (phraseLower.includes(paire[0]) && phraseLower.includes(paire[1])) {
                     score += 10;
                 }
             });
-            
+
             if (keyword && phraseLower.includes(keyword.toLowerCase())) {
                 score += 15;
             }
-            
-            const indicateursParadoxe = ['mais', 'pourtant', 'cependant', 'toutefois', 
-                                          'néanmoins', 'malgré', 'bien que', 'quoique'];
+
+            const indicateursParadoxe = ['mais', 'pourtant', 'cependant', 'toutefois',
+                'néanmoins', 'malgré', 'bien que', 'quoique'];
             indicateursParadoxe.forEach(mot => {
                 if (phraseLower.includes(mot)) score += 5;
             });
-            
+
             if (phrase.length > 100 && phrase.length < 300) score += 2;
-            
+
             return score;
         }
-        
+
         function getAntonyms(keyword) {
             const antonymesMap = {
                 'lumière': ['ténèbres', 'obscurité', 'ombre'],
@@ -510,32 +638,32 @@
                 'jour': ['nuit'],
                 'haut': ['bas']
             };
-            
+
             let antonymes = antonymesMap[keyword] || [];
-            
+
             for (let [key, values] of Object.entries(antonymesMap)) {
                 if (values.includes(keyword)) {
                     antonymes.push(key);
                     antonymes = antonymes.concat(antonymesMap[key] || []);
                 }
             }
-            
+
             return [...new Set(antonymes)];
         }
-        
+
         async function extractCitationsWithAI(text, keyword = '', numCitations = 5) {
             showMessage('🤖 Mode IA activé - Analyse du texte...', 'loading');
-            
+
             // D'abord, obtenir des candidats avec la méthode classique
             const candidates = extractCitations(text, keyword, numCitations * 3);
-            
+
             if (candidates.length === 0) {
                 return [];
             }
-            
+
             // Préparer le texte pour l'IA (limiter la taille)
             const candidateTexts = candidates.map(c => c.phrase).join('\n\n');
-            
+
             const prompt = `Tu es un expert en spiritualité chrétienne et musulmane. Voici des passages d'un texte.
 
 TÂCHE : Sélectionne exactement ${numCitations} citations qui :
@@ -554,20 +682,20 @@ INSTRUCTIONS :
 
             let attempts = 0;
             currentModelIndex = 0;
-            
+
             while (attempts < MAX_ATTEMPTS_PER_BOOK && currentModelIndex < OPENROUTER_MODELS.length) {
                 const model = OPENROUTER_MODELS[currentModelIndex];
-                
+
                 try {
                     showMessage(`🤖 IA active - Modèle: ${model.split('/')[1].split(':')[0]}...`, 'loading');
-                    
+
                     console.log('Envoi au proxy:', {
                         model: model,
                         message_length: prompt.length
                     });
-                    
+
                     const response = await callOpenRouterAPI(prompt, model);
-                    
+
                     if (response && response.trim().length > 0) {
                         // Parser la réponse
                         const aiCitations = response
@@ -575,7 +703,7 @@ INSTRUCTIONS :
                             .map(line => line.trim())
                             .filter(line => line.length > 30)
                             .slice(0, numCitations);
-                        
+
                         if (aiCitations.length > 0) {
                             showMessage(`✅ ${aiCitations.length} citation(s) sélectionnée(s) par l'IA`, 'info');
                             return aiCitations.map((phrase, index) => ({
@@ -587,31 +715,32 @@ INSTRUCTIONS :
                             }));
                         }
                     }
-                    
+
                     // Si pas de résultat valide, essayer le modèle suivant
                     currentModelIndex++;
                     if (currentModelIndex < OPENROUTER_MODELS.length) {
                         await sleep(DELAY_BETWEEN_MODELS);
                     }
-                    
+
                 } catch (error) {
                     console.error(`Erreur avec ${model}:`, error);
                     currentModelIndex++;
-                    
+
                     if (currentModelIndex < OPENROUTER_MODELS.length) {
                         await sleep(DELAY_AFTER_ERROR);
                     }
                 }
-                
+
                 attempts++;
             }
-            
+
             // Si tous les modèles échouent, retourner les candidats classiques
             showMessage('⚠️ IA non disponible - Méthode classique utilisée', 'info');
             return candidates.slice(0, numCitations);
         }
-        
+
         async function callOpenRouterAPI(prompt, model) {
+            // Construction du payload au format standard OpenRouter (Chat Completions)
             const payload = {
                 model: model,
                 messages: [
@@ -623,64 +752,84 @@ INSTRUCTIONS :
                 temperature: 0.7,
                 max_tokens: 2000
             };
-            
+
             console.log('Payload envoyé au proxy:', payload);
-            
-            const fetchPromise = fetch(PROXY_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-            
-            const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Timeout de l\'API')), API_TIMEOUT);
-            });
-            
+
             try {
-                const response = await Promise.race([fetchPromise, timeoutPromise]);
-                
+                const response = await fetch(PROXY_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload),
+                    signal: AbortSignal.timeout(API_TIMEOUT)
+                });
+
                 console.log('Statut réponse:', response.status);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Erreur réponse:', errorText);
-                    throw new Error(`OpenRouter API error: ${response.status}`);
+
+                const responseText = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Réponse non JSON reçue:', responseText);
+                    throw new Error(`Réponse invalide du serveur (${response.status})`);
                 }
-                
-                const data = await response.json();
+
+                if (!response.ok) {
+                    console.error('Erreur API reçue:', data);
+                    // Extraction du message d'erreur profond si disponible (format proxy HF)
+                    let detailedError = "Erreur inconnue";
+                    if (data.details) {
+                        try {
+                            const details = JSON.parse(data.details);
+                            detailedError = details.error?.message || detailedError;
+                        } catch (e) {
+                            detailedError = data.details;
+                        }
+                    } else if (data.error) {
+                        detailedError = typeof data.error === 'object' ? data.error.message : data.error;
+                    }
+                    throw new Error(`OpenRouter API error: ${detailedError}`);
+                }
+
                 console.log('Données reçues:', data);
-                
-                // Le proxy HuggingFace retourne directement le texte dans "response"
+
+                // Le proxy HuggingFace peut retourner directement le texte ou le format standard
                 if (data.response) {
                     return data.response;
                 }
-                
-                // Sinon format OpenRouter standard
+
                 if (data.choices && data.choices[0] && data.choices[0].message) {
                     return data.choices[0].message.content;
                 }
-                
-                throw new Error('Format de réponse invalide');
-                
+
+                if (data.output && data.output.choices) {
+                    return data.output.choices[0].message.content;
+                }
+
+                throw new Error('Format de réponse AI non reconnu');
+
             } catch (error) {
+                if (error.name === 'TimeoutError') {
+                    throw new Error('Délai d\'attente dépassé (timeout)');
+                }
                 throw error;
             }
         }
-        
+
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
-        
+
         function displayCitations(citations, useAI = false) {
             citationsContainer.innerHTML = '';
             messageContainer.innerHTML = '';
-            
+
             if (citations.length === 0) {
                 return;
             }
-            
+
             const keyword = keywordInput.value.trim();
             let message = `${citations.length} citation(s) trouvée(s)`;
             if (keyword) {
@@ -690,12 +839,12 @@ INSTRUCTIONS :
                 message += ' (sélection IA)';
             }
             showMessage(message, 'info');
-            
+
             citations.forEach((item, index) => {
                 const citationDiv = document.createElement('div');
                 citationDiv.className = 'citation';
                 citationDiv.style.animationDelay = `${index * 0.1}s`;
-                
+
                 let pageNumber = '?';
                 if (pageIndex.length > 0 && item.position) {
                     for (let page of pageIndex) {
@@ -705,9 +854,9 @@ INSTRUCTIONS :
                         }
                     }
                 }
-                
+
                 const aiBadge = item.aiGenerated ? `<span class="ai-badge">IA: ${item.modelUsed || 'AI'}</span>` : '';
-                
+
                 citationDiv.innerHTML = `
                     <div class="citation-text">"${item.phrase}"</div>
                     <div class="citation-context">
@@ -716,14 +865,15 @@ INSTRUCTIONS :
                         ${pageIndex.length > 0 && pageNumber !== '?' ? ` | Page ${pageNumber}` : ''}
                     </div>
                 `;
-                
+
                 citationsContainer.appendChild(citationDiv);
             });
         }
-        
+
         function showMessage(text, type) {
             messageContainer.innerHTML = `<div class="${type}">${text}</div>`;
         }
     </script>
 </body>
+
 </html>
