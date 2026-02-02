@@ -383,15 +383,15 @@
         // Configuration du proxy HuggingFace
         const PROXY_URL = "https://gildasr-dictionnaires.hf.space/api/chat";
 
-        // Modèles OpenRouter (sélection plus robuste et diversifiée)
+        // Modèles OpenRouter : Sélection des modèles gratuits les plus puissants (Llama 70B/405B, etc.)
         const OPENROUTER_MODELS = [
-            "google/gemini-2.0-flash-exp:free",
-            "mistralai/mistral-7b-instruct:free",
-            "meta-llama/llama-3.1-8b-instruct:free",
-            "qwen/qwen-2.5-72b-instruct",
-            "anthropic/claude-3-haiku",
-            "deepseek/deepseek-chat",
-            "google/gemini-flash-1.5"
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "meta-llama/llama-3.1-405b-instruct:free",
+            "mistralai/mistral-small-3.1-24b-instruct:free",
+            "google/gemini-2.0-pro-exp-02-05:free",
+            "openai/gpt-oss-120b:free",
+            "tngtech/deepseek-r1t-chimera:free",
+            "anthropic/claude-3-haiku"
         ];
 
         const DELAY_BETWEEN_MODELS = 3000;  // 3 secondes
