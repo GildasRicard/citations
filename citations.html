@@ -725,11 +725,43 @@
         });
 
         async function extractCitationsWithAIFromCandidates(candidates, keyword, numCitations) {
-            showMessage('🤖 Mode IA activé - Analyse transversale...', 'loading');
+            showMessage('🤖 Mode IA activé - Analyse par ouvrage...', 'loading');
 
-            // On garde les 40 meilleurs candidats pour ne pas saturer le prompt
-            const topCandidates = candidates.slice(0, 40);
-            return await runAIAnalysis(topCandidates, keyword, numCitations);
+            // Grouper les candidats par source
+            const sourcesMap = {};
+            candidates.forEach(c => {
+                if (!sourcesMap[c.source]) sourcesMap[c.source] = [];
+                sourcesMap[c.source].push(c);
+            });
+
+            const sourceNames = Object.keys(sourcesMap);
+
+            // Si on a moins de 3 livres, on fait une analyse transversale classique
+            if (sourceNames.length < 3 || numCitations !== 5) {
+                const topCandidates = candidates.slice(0, 40);
+                return await runAIAnalysis(topCandidates, keyword, numCitations);
+            }
+
+            // --- DISTRIBUTION STRICTE 2-2-1 (pour 5 citations et 3 livres) ---
+            showMessage('📚 Répartition équitable (2-2-1) entre les 3 ouvrages...', 'loading');
+
+            const distribution = [2, 2, 1];
+            let allResults = [];
+
+            for (let i = 0; i < 3; i++) {
+                const sourceName = sourceNames[i];
+                const count = distribution[i];
+                const bookCandidates = sourcesMap[sourceName].slice(0, 15); // Top 15 par livre
+
+                showMessage(`Analyse de "${sourceName}" (${count} citation(s))...`, 'loading');
+                const results = await runAIAnalysis(bookCandidates, keyword, count);
+
+                // On force la source car l'IA peut parfois tronquer le texte
+                results.forEach(r => r.source = sourceName);
+                allResults = allResults.concat(results);
+            }
+
+            return allResults;
         }
 
         // Logique de sélection des livres
@@ -1633,140 +1665,67 @@
 
         // Ancienne fonction adaptée pour accepter directement le texte préparé
         async function runAIAnalysis(candidates, keyword = '', numCitations = 5) {
+            // Indexation numérique pour garantir la traçabilité des sources
+            const candidateTexts = candidates.map((c, i) => `[ID:${i}] ${c.phrase}`).join('\n');
 
-            // Si c'est une chaîne brute (ancien format), on l'utilise, sinon on prépare le texte
-            const candidateTexts = Array.isArray(candidates)
-                ? candidates.map(c => c.phrase).join('\n---\n')
-                : candidates;
+            const prompt = `Tu es un expert en paradoxes mystiques. Sélectionne ${numCitations} citations percutantes.
+OBLIGATION : Recopie EXACTEMENT avec l'ID [ID:x] au début.
 
-            const prompt = `Tu es un expert en spiritualité chrétienne et musulmane, spécialisé dans l'identification des paradoxes mystiques.
+DÉFINITION DU PARADOXE MYSTIQUE :
+- FORCE dans la FAIBLESSE
+- GAGNER sa vie en la PERDANT
+- MORT donne la VIE (kénose)
+- DIEU est CACHÉ (Al-Bāṭin) et APPARENT (Al-Ẓāhir)
+- ANÉANTISSEMENT (fanā') -> SUBSISTANCE (baqā')
 
-OBLIGATION ABSOLUE : 
-Tu ne dois RIEN inventer. Tu dois RECOPIER MOT POUR MOT les phrases du texte fourni, sans changer une seule virgule, sans corriger la grammaire, sans ajouter de guillemets. Toute modification du texte original est une faute grave.
-
-DÉFINITION D'UN PARADOXE SPIRITUEL :
-Un paradoxe spirituel présente une vérité qui défie la logique ordinaire, où deux réalités apparemment contradictoires coexistent ou se révèlent mutuellement. Ce n'est pas une simple juxtaposition d'antonymes, mais une tension dialectique où l'un révèle l'autre.
-
-CRITÈRE D'INTENSITÉ :
-Je ne veux PAS de phrases "plates" ou simplement explicatives. Je veux des fulgurances, des aphorismes, des phrases qui cognent.
-
-EXEMPLES DE VRAIS PARADOXES SPIRITUELS (CE QUE JE VEUX) :
-- "Mourir pour vivre"
-- "La nuit obscure illumine"
-- "Plus on possède Dieu, moins on Le possède"
-- "Être roi en devenant serviteur"
-- "Tout avoir en n'ayant rien"
-- "L'éloignement est proximité"
-- "L'ivresse par la sobriété"
-- "Rien n'existe que Lui, pourtant tout existe"
-
-CE QUE TU DOIS ABSOLUMENT REJETER (LE "BANAL") :
-1. Les explications théologiques ou dogmatiques "techniques" :
-   NON : "Le baptême ne fait pas seulement participer le baptisé à la mort et à la résurrection du Christ, mais au Christ Lui-même." (C'est une explication de fonctionnement, c'est trop pédagogique).
-   NON : "Mourir à la condition déchue et renaître à la condition de l’homme régénéré." (Trop descriptif/scolaire).
-
-2. Les simples contrastes temporels ou descriptifs :
-   NON : "Après la nuit vient le jour."
-   NON : "Il était triste puis il fut joyeux."
-
-3. Les phrases trop longues, molles ou diluées.
-
-PASSAGES À ANALYSER (RECOPIE EN UN PARMI CEUX-LÀ) :
+PASSAGES :
 ${candidateTexts}
 
-TÂCHE : Sélectionne exactement ${numCitations} citations de la liste ci-dessus qui :
-1. Sont des APHORISMES percutants.
-2. Contiennent un VRAI paradoxe mystique.
-3. Sont RECOPIÉES RIGOUREUSEMENT MOT POUR MOT.
-${keyword ? `4. Privilégie (sans obligation) les citations contenant "${keyword}" si elles sont paradoxales.\n` : ''}
-
-FORMAT DE RÉPONSE :
-- Une citation par ligne
-- AUCUN TEXTE AVANT OU APRÈS (Pas de "Voici les citations", pas de "D'accord")
-- Aucune numérotation, aucun commentaire, aucune explication
-- Phrases EXACTES du texte
-
-Réponds maintenant avec les citations uniquement :`;
+FORMAT : [ID:x] Texte exact
+Réponds uniquement avec les citations :`;
 
             let attempts = 0;
             currentModelIndex = 0;
 
             while (attempts < MAX_ATTEMPTS_PER_BOOK && currentModelIndex < OPENROUTER_MODELS.length) {
                 const model = OPENROUTER_MODELS[currentModelIndex];
-
                 try {
                     showMessage(`🤖 IA active - Modèle: ${model.split('/')[1].split(':')[0]}...`, 'loading');
-
-                    console.log('Envoi au proxy:', {
-                        model: model,
-                        message_length: prompt.length
-                    });
-
                     const response = await callOpenRouterAPI(prompt, model);
 
                     if (response && response.trim().length > 0) {
-                        // Nettoyage des phrases d'introduction type "Voici les citations..."
-                        const garbage = ["voici", "d'accord", "bien sûr", "sélection", "extrait", "citation"];
-                        const filteredCitations = response
-                            .split('\n')
-                            .map(line => line.trim().replace(/^["']|["']$/g, '')) // Enlève aussi les guillemets superflus
-                            .filter(line => {
-                                if (line.length < 15) return false;
-                                const lower = line.toLowerCase();
-                                return !garbage.some(g => lower.startsWith(g) && lower.endsWith(':'));
-                            })
-                            .slice(0, numCitations);
+                        const lines = response.split('\n');
+                        const results = [];
+                        for (let line of lines) {
+                            const matchId = line.match(/\[ID:(\d+)\]/);
+                            if (matchId) {
+                                const id = parseInt(matchId[1]);
+                                let phrase = line.replace(/\[ID:\d+\]/, '').replace(/^[:\s-]+/, '').trim();
+                                // Nettoyage guillemets
+                                phrase = phrase.replace(/^["']|["']$/g, '');
 
-                        if (filteredCitations.length > 0) {
-                            showMessage(`✅ ${filteredCitations.length} citation(s) sélectionnée(s) par l'IA`, 'info');
-                            return filteredCitations.map((phrase, index) => {
-                                let source = "Inconnu";
-                                if (Array.isArray(candidates)) {
-                                    const clean = s => s.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '');
-                                    const cleanPhrase = clean(phrase);
-
-                                    // On cherche une correspondance sur les 60 premiers caractères
-                                    const match = candidates.find(c => {
-                                        const cleanC = clean(c.phrase);
-                                        const part = 60;
-                                        return cleanC.includes(cleanPhrase.substring(0, part)) ||
-                                            cleanPhrase.includes(cleanC.substring(0, part));
+                                if (candidates[id]) {
+                                    results.push({
+                                        phrase: phrase || candidates[id].phrase,
+                                        score: 100 - results.length,
+                                        position: candidates[id].position,
+                                        source: candidates[id].source,
+                                        aiGenerated: true,
+                                        modelUsed: model.split('/')[1]
                                     });
-                                    if (match) source = match.source;
                                 }
-
-                                return {
-                                    phrase: phrase,
-                                    score: 100 - index,
-                                    position: 0,
-                                    source: source,
-                                    aiGenerated: true,
-                                    modelUsed: model.split('/')[1]
-                                };
-                            });
+                            }
+                            if (results.length >= numCitations) break;
                         }
+                        if (results.length > 0) return results;
                     }
-
-                    // Si pas de résultat valide, essayer le modèle suivant
                     currentModelIndex++;
-                    if (currentModelIndex < OPENROUTER_MODELS.length) {
-                        await sleep(DELAY_BETWEEN_MODELS);
-                    }
-
                 } catch (error) {
-                    console.error(`Erreur avec ${model}:`, error);
                     currentModelIndex++;
-
-                    if (currentModelIndex < OPENROUTER_MODELS.length) {
-                        await sleep(DELAY_AFTER_ERROR);
-                    }
+                    await sleep(DELAY_AFTER_ERROR);
                 }
-
                 attempts++;
             }
-
-            // Si tous les modèles échouent
-            showMessage('⚠️ IA non disponible ou échec analyse', 'info');
             return [];
         }
 
