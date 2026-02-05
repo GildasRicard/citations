@@ -926,132 +926,6 @@
             const phraseLower = phrase.toLowerCase();
             let score = 0;
 
-            // ===== CRITÈRES ANTI-PLATITUDE (PÉNALITÉS) =====
-
-            // 1. Rejeter les phrases trop explicatives/pédagogiques
-            const marqueursPedagogiques = [
-                'ne fait pas seulement', 'c\'est-à-dire', 'en d\'autres termes',
-                'autrement dit', 'cela signifie', 'il s\'agit de', 'on peut dire que',
-                'nous pouvons', 'il faut comprendre', 'ceci veut dire',
-                'participer à', 'consiste à', 'permet de', 'a pour but de',
-                'se caractérise par', 'se définit par', 'condition de'
-            ];
-
-            for (let marqueur of marqueursPedagogiques) {
-                if (phraseLower.includes(marqueur)) {
-                    score -= 20; // Forte pénalité
-                }
-            }
-
-            // 2. Rejeter les phrases trop longues (diluées, molles)
-            if (phrase.length > 350) {
-                score -= 15;
-            }
-
-            // 3. Rejeter les simples contrastes temporels (après/avant, puis, ensuite)
-            const contrastesTemporels = [
-                /après.*vient/i, /puis.*fut/i, /ensuite.*devint/i,
-                /d'abord.*ensuite/i, /avant.*après/i
-            ];
-
-            for (let pattern of contrastesTemporels) {
-                if (pattern.test(phrase)) {
-                    score -= 10;
-                }
-            }
-
-            // 4. Rejeter les phrases avec trop de conjonctions de coordination (style narratif)
-            const nbEt = (phrase.match(/\bet\b/gi) || []).length;
-            const nbOu = (phrase.match(/\bou\b/gi) || []).length;
-            if (nbEt > 3 || nbOu > 2) {
-                score -= 8;
-            }
-
-            // 5. Pénaliser les phrases avec vocabulaire technique/scolaire
-            const vocabulaireTechnique = [
-                'baptisé', 'baptême', 'sacrement', 'dogme', 'doctrine',
-                'théologie', 'exégèse', 'herméneutique', 'catéchisme',
-                'régénéré', 'déchu', 'fonctionnement', 'mécanisme'
-            ];
-
-            let nbTechnique = 0;
-            for (let mot of vocabulaireTechnique) {
-                if (phraseLower.includes(mot)) nbTechnique++;
-            }
-            if (nbTechnique > 1) {
-                score -= 12;
-            }
-
-            // ===== CRITÈRES POSITIFS : PARADOXES AUTHENTIQUES =====
-
-            // 1. Structures kénotiques (perdre pour gagner, mourir pour vivre)
-            const structuresKenotiques = [
-                // Perdre/gagner
-                { pattern: /(perdre|perd|perdu).{0,40}(gagner|gagne|trouvé|trouver)/i, points: 25 },
-                { pattern: /(gagner|gagne|trouvé|trouver).{0,40}(perdre|perd|perdu)/i, points: 25 },
-
-                // Mourir/vivre
-                { pattern: /(mourir|mort|meurt).{0,40}(vivre|vie|vivant|ressusciter)/i, points: 30 },
-                { pattern: /(vivre|vie|vivant).{0,40}(mourir|mort|meurt)/i, points: 30 },
-
-                // Vide/plein
-                { pattern: /(vide|vider|dépouiller|néant|rien).{0,40}(plein|remplir|plénitude|tout)/i, points: 25 },
-                { pattern: /(plein|remplir|plénitude|tout).{0,40}(vide|vider|dépouiller|néant|rien)/i, points: 25 },
-
-                // Faiblesse/force
-                { pattern: /(faible|faiblesse|impuissance).{0,40}(fort|force|puissance)/i, points: 25 },
-                { pattern: /(fort|force|puissance).{0,40}(faible|faiblesse|impuissance)/i, points: 25 },
-
-                // Serviteur/maître
-                { pattern: /(serviteur|esclave|servir).{0,40}(maître|roi|seigneur|libre)/i, points: 25 },
-                { pattern: /(maître|roi|seigneur).{0,40}(serviteur|esclave|servir)/i, points: 25 },
-
-                // Premier/dernier
-                { pattern: /(premier|premiers).{0,40}(dernier|derniers)/i, points: 25 },
-                { pattern: /(dernier|derniers).{0,40}(premier|premiers)/i, points: 25 },
-
-                // Pauvre/riche
-                { pattern: /(pauvre|pauvreté|dénuement).{0,40}(riche|richesse|abondance)/i, points: 25 },
-                { pattern: /(riche|richesse|abondance).{0,40}(pauvre|pauvreté|dénuement)/i, points: 25 }
-            ];
-
-            for (let structure of structuresKenotiques) {
-                if (structure.pattern.test(phrase)) {
-                    score += structure.points;
-                }
-            }
-
-            // 2. Paradoxes mystiques soufis (fanā'/baqā', tawhīd)
-            const paradoxesSoufis = [
-                { pattern: /(anéantir|anéantissement|fana|fanā).{0,40}(subsist|baqa|baqā|être|exister)/i, points: 30 },
-                { pattern: /(caché|al-batin|batin).{0,40}(apparent|manifeste|al-zahir|zahir)/i, points: 30 },
-                { pattern: /(proche|proximité|veine).{0,40}(loin|distant|éloigné|inaccessible)/i, points: 25 },
-                { pattern: /(un|unité|tawhid|tawhīd).{0,40}(multiple|multiplicité|divers)/i, points: 25 }
-            ];
-
-            for (let paradoxe of paradoxesSoufis) {
-                if (paradoxe.pattern.test(phrase)) {
-                    score += paradoxe.points;
-                }
-            }
-
-            // 3. Paradoxes apophatiques (théologie négative)
-            const paradoxesApophatiques = [
-                { pattern: /(indicible|ineffable|innommable|inexprimable).{0,40}(dire|parler|nommer|exprimer)/i, points: 25 },
-                { pattern: /(dire|parler|nommer).{0,40}(indicible|ineffable|innommable|silence)/i, points: 25 },
-                { pattern: /(ténèbres|nuit|obscur).{0,40}(lumière|illumin|éclair|clarté)/i, points: 25 },
-                { pattern: /(lumière|illumin|clarté).{0,40}(ténèbres|nuit|obscur|aveugle)/i, points: 25 },
-                { pattern: /(savoir|connaissance|sagesse).{0,40}(ignor|inconnai|folie)/i, points: 20 },
-                { pattern: /(ignor|inconnai|folie).{0,40}(savoir|connaissance|sagesse)/i, points: 20 }
-            ];
-
-            for (let paradoxe of paradoxesApophatiques) {
-                if (paradoxe.pattern.test(phrase)) {
-                    score += paradoxe.points;
-                }
-            }
-
-            // 4. Détection de paires d'antonymes classiques (liste existante)
             const motsParadoxaux = [
                 // Lumière et obscurité
                 ['lumière', 'ténèbres'], ['lumière', 'obscurité'], ['lumière', 'nuit'],
@@ -1228,33 +1102,21 @@
 
             motsParadoxaux.forEach(paire => {
                 if (phraseLower.includes(paire[0]) && phraseLower.includes(paire[1])) {
-                    score += 8; // Réduit de 10 à 8 car les structures sont plus importantes
+                    score += 10;
                 }
             });
 
-            // 5. Bonus pour le mot-clé recherché
             if (keyword && phraseLower.includes(keyword.toLowerCase())) {
                 score += 15;
             }
 
-            // 6. Indicateurs de tension dialectique (mais, pourtant, etc.)
             const indicateursParadoxe = ['mais', 'pourtant', 'cependant', 'toutefois',
-                'néanmoins', 'malgré', 'bien que', 'quoique', 'or', 'alors que'];
+                'néanmoins', 'malgré', 'bien que', 'quoique'];
             indicateursParadoxe.forEach(mot => {
                 if (phraseLower.includes(mot)) score += 5;
             });
 
-            // 7. Bonus pour les phrases courtes et percutantes (aphorismes)
-            if (phrase.length >= 40 && phrase.length <= 180) {
-                score += 10; // Aphorisme idéal
-            } else if (phrase.length > 180 && phrase.length <= 280) {
-                score += 3; // Acceptable
-            }
-
-            // 8. Bonus pour les structures "par" (paradoxe par excellence)
-            if (/\bpar\b/i.test(phrase)) {
-                score += 5;
-            }
+            if (phrase.length > 100 && phrase.length < 300) score += 2;
 
             return score;
         }
@@ -1777,94 +1639,52 @@
                 ? candidates.map(c => c.phrase).join('\n---\n')
                 : candidates;
 
-            const prompt = `Tu es un expert en spiritualité chrétienne et musulmane (soufisme), spécialisé dans l'identification des paradoxes mystiques authentiques.
+            const prompt = `Tu es un expert en spiritualité chrétienne et musulmane, spécialisé dans l'identification des paradoxes mystiques.
 
-═══════════════════════════════════════════════════════════════════════════════
-OBLIGATION ABSOLUE : RECOPIE EXACTE
-═══════════════════════════════════════════════════════════════════════════════
+OBLIGATION ABSOLUE : 
 Tu ne dois RIEN inventer. Tu dois RECOPIER MOT POUR MOT les phrases du texte fourni, sans changer une seule virgule, sans corriger la grammaire, sans ajouter de guillemets. Toute modification du texte original est une faute grave.
 
-═══════════════════════════════════════════════════════════════════════════════
-QU'EST-CE QU'UN PARADOXE MYSTIQUE AUTHENTIQUE ?
-═══════════════════════════════════════════════════════════════════════════════
+DÉFINITION D'UN PARADOXE SPIRITUEL :
+Un paradoxe spirituel présente une vérité qui défie la logique ordinaire, où deux réalités apparemment contradictoires coexistent ou se révèlent mutuellement. Ce n'est pas une simple juxtaposition d'antonymes, mais une tension dialectique où l'un révèle l'autre.
 
-Le paradoxe mystique N'EST PAS une contradiction illogique, mais une VÉRITÉ TROP VASTE pour être saisie d'un seul regard.
+CRITÈRE D'INTENSITÉ :
+Je ne veux PAS de phrases "plates" ou simplement explicatives. Je veux des fulgurances, des aphorismes, des phrases qui cognent.
 
-DANS LA MYSTIQUE CHRÉTIENNE :
-C'est le "mystère" de l'Incarnation et de la Croix, où l'on découvre que :
-- La FORCE se déploie dans la FAIBLESSE
-- On ne GAGNE sa vie qu'en acceptant de la PERDRE par amour
-- Le DERNIER devient PREMIER
-- Le SERVITEUR devient ROI
-- La MORT donne la VIE (kénose)
-
-DANS LA MYSTIQUE MUSULMANE (SOUFISME) :
-C'est la tension de l'Unicité (Tawhīd) où le chercheur réalise que :
-- Dieu est simultanément le plus CACHÉ (Al-Bāṭin) et le plus APPARENT (Al-Ẓāhir)
-- L'ANÉANTISSEMENT du moi (fanā') est l'unique porte vers la véritable SUBSISTANCE en Lui (baqā')
-- La DISTANCE infinie entre Créateur et créature coexiste avec l'intimité divine plus proche "que la veine jugulaire"
-
-DÉFINITION SYNTHÉTIQUE :
-Un paradoxe spirituel est une affirmation où deux réalités apparemment contradictoires (vie/mort, absence/présence, vide/plénitude) se REJOIGNENT dans l'union à Dieu, au-delà des catégories de la raison. Il exprime que le chemin vers Dieu passe par une PERTE DE SOI qui est en même temps la vraie NAISSANCE de l'âme en Dieu.
-
-═══════════════════════════════════════════════════════════════════════════════
-CRITÈRE D'INTENSITÉ : FULGURANCES, PAS EXPLICATIONS
-═══════════════════════════════════════════════════════════════════════════════
-
-Je veux des APHORISMES qui COGNENT, pas des phrases molles ou pédagogiques.
-
-✅ EXEMPLES DE VRAIS PARADOXES SPIRITUELS (CE QUE JE VEUX) :
+EXEMPLES DE VRAIS PARADOXES SPIRITUELS (CE QUE JE VEUX) :
 - "Mourir pour vivre"
 - "La nuit obscure illumine"
 - "Plus on possède Dieu, moins on Le possède"
 - "Être roi en devenant serviteur"
 - "Tout avoir en n'ayant rien"
 - "L'éloignement est proximité"
-- "La force dans la faiblesse"
-- "Perdre sa vie pour la trouver"
-- "S'anéantir pour subsister en Lui"
-- "Le Caché est le Manifeste"
+- "L'ivresse par la sobriété"
 - "Rien n'existe que Lui, pourtant tout existe"
 
-❌ CE QUE TU DOIS ABSOLUMENT REJETER (LE "BANAL") :
+CE QUE TU DOIS ABSOLUMENT REJETER (LE "BANAL") :
+1. Les explications théologiques ou dogmatiques "techniques" :
+   NON : "Le baptême ne fait pas seulement participer le baptisé à la mort et à la résurrection du Christ, mais au Christ Lui-même." (C'est une explication de fonctionnement, c'est trop pédagogique).
+   NON : "Mourir à la condition déchue et renaître à la condition de l’homme régénéré." (Trop descriptif/scolaire).
 
-1. Les EXPLICATIONS théologiques ou dogmatiques "techniques" :
-   ❌ "Le baptême ne fait pas seulement participer le baptisé à la mort et à la résurrection du Christ, mais au Christ Lui-même."
-      → C'est une explication de FONCTIONNEMENT, c'est trop pédagogique
-   ❌ "Mourir à la condition déchue et renaître à la condition de l'homme régénéré."
-      → Trop descriptif/scolaire, pas assez percutant
+2. Les simples contrastes temporels ou descriptifs :
+   NON : "Après la nuit vient le jour."
+   NON : "Il était triste puis il fut joyeux."
 
-2. Les simples CONTRASTES TEMPORELS ou descriptifs :
-   ❌ "Après la nuit vient le jour."
-   ❌ "Il était triste puis il fut joyeux."
-   ❌ "D'abord il souffrit, ensuite il fut consolé."
+3. Les phrases trop longues, molles ou diluées.
 
-3. Les phrases TROP LONGUES, molles ou diluées (plus de 250 caractères = suspect)
-
-4. Les phrases avec vocabulaire technique sans tension paradoxale :
-   ❌ "Le sacrement confère la grâce sanctifiante."
-   ❌ "La doctrine enseigne la nature divine."
-
-═══════════════════════════════════════════════════════════════════════════════
-PASSAGES À ANALYSER (RECOPIE L'UN D'ENTRE EUX) :
-═══════════════════════════════════════════════════════════════════════════════
+PASSAGES À ANALYSER (RECOPIE EN UN PARMI CEUX-LÀ) :
 ${candidateTexts}
 
-═══════════════════════════════════════════════════════════════════════════════
-TÂCHE : Sélectionne exactement ${numCitations} citations
-═══════════════════════════════════════════════════════════════════════════════
-
-CRITÈRES DE SÉLECTION (dans l'ordre de priorité) :
-1. ✅ Sont des APHORISMES percutants (courts, denses, frappants)
-2. ✅ Contiennent un VRAI paradoxe mystique (union des contraires, kénose, fanā'/baqā')
-3. ✅ Sont RECOPIÉES RIGOUREUSEMENT MOT POUR MOT
-${keyword ? `4. ✅ Privilégie (sans obligation) les citations contenant "${keyword}" si elles sont paradoxales\n` : ''}
+TÂCHE : Sélectionne exactement ${numCitations} citations de la liste ci-dessus qui :
+1. Sont des APHORISMES percutants.
+2. Contiennent un VRAI paradoxe mystique.
+3. Sont RECOPIÉES RIGOUREUSEMENT MOT POUR MOT.
+${keyword ? `4. Privilégie (sans obligation) les citations contenant "${keyword}" si elles sont paradoxales.\n` : ''}
 
 FORMAT DE RÉPONSE :
 - Une citation par ligne
-- AUCUN TEXTE AVANT OU APRÈS (Pas de "Voici les citations", pas de "D'accord", pas de préambule)
+- AUCUN TEXTE AVANT OU APRÈS (Pas de "Voici les citations", pas de "D'accord")
 - Aucune numérotation, aucun commentaire, aucune explication
-- Phrases EXACTES du texte (copie littérale)
+- Phrases EXACTES du texte
 
 Réponds maintenant avec les citations uniquement :`;
 
