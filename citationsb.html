@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracteur de Paradoxes Mystiques (Distillation 2-2-1)</title>
+    <style>
+        :root {
+            --primary: #764ba2;
+            --secondary: #667eea;
+            --accent: #ff9a9e;
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --text-main: #2d3436;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .search-mode-selector {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            flex: 1;
+            max-width: 250px;
+            cursor: pointer;
+        }
+
+        .mode-btn input[type="radio"] {
+            display: none;
+        }
+
+        .mode-content {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #eee;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mode-btn input[type="radio"]:checked+.mode-content {
+            border-color: var(--primary);
+            background: rgba(118, 75, 162, 0.05);
+            transform: scale(1.05);
+        }
+
+        .mode-icon {
+            font-size: 2em;
+        }
+
+        .mode-text {
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        .upload-section {
+            background: rgba(102, 126, 234, 0.05);
+            border: 3px dashed var(--secondary);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .file-label {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .options-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 15px 25px;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            width: 100%;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: all 0.3s;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .citation {
+            background: white;
+            border-left: 8px solid var(--primary);
+            padding: 35px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .citation-text {
+            font-size: 1.3em;
+            font-style: italic;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .citation-source {
+            font-size: 0.9em;
+            color: #777;
+            font-weight: 600;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .info {
+            background: #edf2ff;
+            color: #4c6ef5;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+		
+		
+		
+		
+		
+    </style>
+</head>
+
+<body>
+    <h1>📖 Distillateur de Paradoxes</h1>
+    
+    <div class="container">
+        <!-- Section Source -->
+        <div class="section">
+            <div class="section-header">
+                <span class="icon">💾</span>
+                <span>Local</span>
+            </div>
+            <div class="section-content">
+                <label class="file-label">
+                    Choisir un fichier (PDF, TXT, JSON)
+                    <input type="file" id="file-input" accept=".pdf,.txt,.json">
+                </label>
+                <div id="file-name" class="file-name">Aucun fichier</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="icon">🌐</span>
+                <span>Bibliothèque</span>
+            </div>
+            <div class="section-content">
+                <p class="info-text">Recherche dans la bibliothèque GitHub (Distribution 2-2-1 automatique)</p>
+                
+                <div class="input-group">
+                    <label for="theme-input">Thème ou mot-clé (ex: lumière, mort, silence) :</label>
+                    <input type="text" id="theme-input" placeholder="Entrez un thème...">
+                </div>
+                
+                <div class="input-group">
+                    <label for="count-input">Nombre de citations :</label>
+                    <input type="number" id="count-input" value="5" min="1" max="50">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="use-ai">
+                    <label for="use-ai">Utiliser l'IA (Sélection sémantique avancée)</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="strict-mode" checked>
+                    <label for="strict-mode">Mode strict (paradoxes structurels uniquement)</label>
+                </div>
+            </div>
+        </div>
+
+        <button id="extract-btn" class="extract-btn">EXTRAIRE LES PARADOXES</button>
+        
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <span>Analyse des structures paradoxales...</span>
+        </div>
+
+        <div id="results" class="results hidden">
+            <h2>Paradoxes trouvés</h2>
+            <div id="results-container"></div>
+        </div>
+        
+        <div id="debug-panel" class="debug-panel hidden">
+            <h3>🔍 Analyse de détection</h3>
+            <div id="debug-content"></div>
+        </div>
+    </div>
+
+    <script>
+    // ========================================
+    // MOTEUR DE DÉTECTION DE PARADOXES MYSTIQUES
+    // Version 2.0 - Analyse structurelle profonde
+    // ========================================
+
+    const ParadoxEngine = {
+        
+        // === STRUCTURES PARADOXALES FONDAMENTALES ===
+        
+        // Type 1: Transformation par l'inverse (perdre→gagner, mourir→vivre)
+        transformationPatterns: [
+            { 
+                pattern: /(?:celui qui|quiconque|qui)\s+(?:perd|perdra|abandonne|renonce à|se dépouille de|meurt|mourra)\s+(?:sa|son|la|le|à)?\s*(\w+).*?(?:trouve|trouvera|gagne|gagnera|reçoit|recevra|vit|vivra|obtient|obtiendra|possède|aura)\s+(?:sa|son|la|le|une|un)?\s*(\w+)/gi,
+                score: 95,
+                type: 'transformation_inverse'
+            },
+            {
+                pattern: /(?:en|par|dans)\s+(?:perdant|abandonnant|mourant|renonçant|se dépouillant).*?(?:on trouve|on gagne|on reçoit|on vit|naît|apparaît|surgit|se révèle)/gi,
+                score: 90,
+                type: 'transformation_inverse'
+            },
+            {
+                pattern: /(?:la mort|mourir|perdre|s'anéantir|se vider).*?(?:est|devient|mène à|ouvre à|conduit à).*?(?:la vie|vivre|la plénitude|la renaissance|la vraie vie)/gi,
+                score: 92,
+                type: 'transformation_inverse'
+            }
+        ],
+        
+        // Type 2: Coexistence des contraires (présence/absence, proche/loin)
+        coexistencePatterns: [
+            {
+                pattern: /(?:à la fois|simultanément|en même temps)\s+(\w+)\s+et\s+(\w+)/gi,
+                score: 85,
+                type: 'coexistence',
+                validate: (m, text) => this.areOpposites(m[1], m[2])
+            },
+            {
+                pattern: /(?:plus|le plus)\s+(\w+)\s+(?:et|tout en étant|mais aussi)\s+(?:plus|le plus)\s+(\w+)/gi,
+                score: 88,
+                type: 'coexistence'
+            },
+            {
+                pattern: /(?:caché|absent|invisible|loin|transcendant).*?(?:et|mais|pourtant|cependant).*?(?:proche|présent|visible|intime|immanent)/gi,
+                score: 90,
+                type: 'coexistence'
+            },
+            {
+                pattern: /(?:proche|présent|visible|intime|immanent).*?(?:et|mais|pourtant|cependant).*?(?:caché|absent|invisible|loin|transcendant)/gi,
+                score: 90,
+                type: 'coexistence'
+            }
+        ],
+        
+        // Type 3: Force dans la faiblesse (puissance/impuissance)
+        kenosePatterns: [
+            {
+                pattern: /(?:ma|la|sa|ta)\s+(?:force|puissance|gloire|grandeur).*?(?:dans|par|à travers|se manifeste en|s'accomplit dans|se perfectionne dans)\s+(?:ma|la|sa|ta)?\s*(?:faiblesse|impuissance|petitesse|humilité|pauvreté|bassesse)/gi,
+                score: 95,
+                type: 'kenose'
+            },
+            {
+                pattern: /(?:quand|lorsque)\s+(?:je suis|nous sommes|on est)\s+(?:faible|pauvre|petit|humble|impuissant).*?(?:alors|c'est alors que|je suis|nous sommes)\s+(?:fort|riche|grand|puissant)/gi,
+                score: 93,
+                type: 'kenose'
+            },
+            {
+                pattern: /(?:la faiblesse|l'impuissance|la pauvreté|l'humilité).*?(?:est|devient|révèle|manifeste).*?(?:la force|la puissance|la richesse|la grandeur)/gi,
+                score: 90,
+                type: 'kenose'
+            }
+        ],
+        
+        // Type 4: Plénitude dans le vide (fanā'/baqā')
+        fanaPatterns: [
+            {
+                pattern: /(?:s'anéantir|se vider|se perdre|disparaître|mourir à soi).*?(?:pour|afin de|et ainsi|et alors)\s+(?:subsister|demeurer|vivre|renaître|exister vraiment)\s+(?:en|dans)\s+(?:Dieu|Lui|l'Éternel|Allah|le Divin)/gi,
+                score: 97,
+                type: 'fana_baqa'
+            },
+            {
+                pattern: /(?:le vide|le néant|le rien|l'absence de soi).*?(?:est|devient|révèle|ouvre à).*?(?:la plénitude|la présence|le tout|la vraie vie|Dieu)/gi,
+                score: 92,
+                type: 'fana_baqa'
+            },
+            {
+                pattern: /(?:anéantissement|extinction|effacement|disparition)\s+(?:du moi|de l'ego|du soi).*?(?:vraie vie|subsistance|union|présence divine)/gi,
+                score: 94,
+                type: 'fana_baqa'
+            }
+        ],
+        
+        // Type 5: Union mystique (séparation/union)
+        unionPatterns: [
+            {
+                pattern: /(?:si éloigné|infiniment distant|totalement autre|transcendant).*?(?:et pourtant|mais|cependant).*?(?:si proche|plus proche que|intime|en nous|plus près que)/gi,
+                score: 93,
+                type: 'union_mystique'
+            },
+            {
+                pattern: /plus\s+(?:proche|près|intime).*?(?:que|de).*?(?:veine jugulaire|nous-même|notre propre souffle|notre cœur)/gi,
+                score: 96,
+                type: 'union_mystique'
+            },
+            {
+                pattern: /(?:je|nous)\s+(?:en|dans)\s+(?:Lui|Dieu|Christ).*?(?:et|,).*?(?:Lui|Dieu|Christ)\s+(?:en|dans)\s+(?:moi|nous)/gi,
+                score: 95,
+                type: 'union_mystique'
+            }
+        ],
+
+        // === MARQUEURS LINGUISTIQUES DE PARADOXE ===
+        
+        paradoxMarkers: {
+            // Connecteurs de tension paradoxale
+            tensionConnectors: [
+                'et pourtant', 'mais', 'cependant', 'toutefois', 'néanmoins',
+                'or', 'et cependant', 'bien que', 'quoique', 'malgré',
+                'tout en étant', 'à la fois', 'en même temps', 'simultanément'
+            ],
+            
+            // Verbes de transformation
+            transformationVerbs: [
+                'devient', 'se transforme en', 'se change en', 'se révèle être',
+                'est en réalité', 'conduit à', 'mène à', 'ouvre à',
+                's\'accomplit dans', 'se perfectionne dans', 'se manifeste dans'
+            ],
+            
+            // Structures conditionnelles paradoxales
+            conditionalParadox: [
+                'celui qui .* trouvera',
+                'quiconque .* recevra', 
+                'si .* alors',
+                'pour .* il faut',
+                'ce n\'est qu\'en .* que'
+            ]
+        },
+
+        // === PAIRES DE CONCEPTS OPPOSÉS MYSTIQUES ===
+        
+        oppositionPairs: {
+            // Opposition vie/mort
+            vie_mort: {
+                positif: ['vie', 'vivre', 'vivant', 'vivante', 'naissance', 'naître', 'renaissance'],
+                negatif: ['mort', 'mourir', 'mort', 'morte', 'mortel', 'trépas', 'décès', 'périr']
+            },
+            // Opposition lumière/ténèbres
+            lumiere_tenebres: {
+                positif: ['lumière', 'clarté', 'jour', 'éclat', 'splendeur', 'illumination', 'brillant'],
+                negatif: ['ténèbres', 'obscurité', 'nuit', 'ombre', 'noirceur', 'sombre', 'opaque']
+            },
+            // Opposition plénitude/vide
+            plenitude_vide: {
+                positif: ['plénitude', 'plein', 'rempli', 'comblé', 'richesse', 'abondance', 'tout'],
+                negatif: ['vide', 'néant', 'rien', 'pauvreté', 'manque', 'absence', 'dénuement']
+            },
+            // Opposition force/faiblesse
+            force_faiblesse: {
+                positif: ['force', 'fort', 'puissance', 'puissant', 'grandeur', 'gloire', 'victoire'],
+                negatif: ['faiblesse', 'faible', 'impuissance', 'impuissant', 'petitesse', 'humilité', 'défaite']
+            },
+            // Opposition présence/absence
+            presence_absence: {
+                positif: ['présence', 'présent', 'proche', 'intime', 'visible', 'manifeste', 'révélé'],
+                negatif: ['absence', 'absent', 'loin', 'distant', 'caché', 'invisible', 'voilé']
+            },
+            // Opposition gain/perte
+            gain_perte: {
+                positif: ['gagner', 'gain', 'trouver', 'obtenir', 'recevoir', 'acquérir', 'posséder'],
+                negatif: ['perdre', 'perte', 'abandonner', 'renoncer', 'donner', 'sacrifier', 'lâcher']
+            },
+            // Opposition union/séparation
+            union_separation: {
+                positif: ['union', 'uni', 'unité', 'communion', 'fusion', 'ensemble', 'avec'],
+                negatif: ['séparation', 'séparé', 'division', 'distance', 'éloignement', 'sans', 'seul']
+            },
+            // Opposition élévation/abaissement
+            elevation_abaissement: {
+                positif: ['élévation', 'élevé', 'haut', 'monter', 'glorifié', 'exalté', 'ciel'],
+                negatif: ['abaissement', 'abaissé', 'bas', 'descendre', 'humilié', 'terre', 'poussière']
+            }
+        },
+
+        // === MÉTHODES D'ANALYSE ===
+        
+        /**
+         * Analyse une citation et retourne un score de paradoxe
+         */
+        analyzeParadox(text, strictMode = true) {
+            const analysis = {
+                text: text,
+                score: 0,
+                types: [],
+                matches: [],
+                explanation: [],
+                isParadox: false
+            };
+            
+            const normalizedText = this.normalizeText(text);
+            
+            // 1. Recherche des patterns structurels
+            const structuralScore = this.findStructuralPatterns(normalizedText, analysis);
+            
+            // 2. Analyse des paires d'oppositions
+            const oppositionScore = this.analyzeOppositions(normalizedText, analysis);
+            
+            // 3. Analyse des marqueurs linguistiques
+            const markerScore = this.analyzeMarkers(normalizedText, analysis);
+            
+            // 4. Analyse de la structure syntaxique
+            const syntaxScore = this.analyzeSyntax(normalizedText, analysis);
+            
+            // Calcul du score final pondéré
+            analysis.score = Math.round(
+                structuralScore * 0.45 +
+                oppositionScore * 0.25 +
+                markerScore * 0.15 +
+                syntaxScore * 0.15
+            );
+            
+            // Seuil de validation
+            const threshold = strictMode ? 65 : 45;
+            analysis.isParadox = analysis.score >= threshold;
+            
+            // Génération de l'explication
+            if (analysis.isParadox) {
+                analysis.explanation = this.generateExplanation(analysis);
+            }
+            
+            return analysis;
+        },
+        
+        /**
+         * Normalise le texte pour l'analyse
+         */
+        normalizeText(text) {
+            return text
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Enlève les accents pour la recherche
+                .replace(/['']/g, "'")
+                .replace(/[«»""]/g, '"');
+        },
+        
+        /**
+         * Recherche les patterns structurels de paradoxe
+         */
+        findStructuralPatterns(text, analysis) {
+            let maxScore = 0;
+            const originalText = analysis.text.toLowerCase();
+            
+            const allPatterns = [
+                ...this.transformationPatterns,
+                ...this.coexistencePatterns,
+                ...this.kenosePatterns,
+                ...this.fanaPatterns,
+                ...this.unionPatterns
+            ];
+            
+            for (const p of allPatterns) {
+                const regex = new RegExp(p.pattern.source, p.pattern.flags);
+                const matches = originalText.match(regex);
+                
+                if (matches) {
+                    maxScore = Math.max(maxScore, p.score);
+                    analysis.types.push(p.type);
+                    analysis.matches.push({
+                        type: 'structural',
+                        pattern: p.type,
+                        matched: matches[0],
+                        score: p.score
+                    });
+                }
+            }
+            
+            return maxScore;
+        },
+        
+        /**
+         * Analyse les paires d'oppositions présentes
+         */
+        analyzeOppositions(text, analysis) {
+            let score = 0;
+            let oppositionsFound = [];
+            
+            for (const [pairName, pair] of Object.entries(this.oppositionPairs)) {
+                let hasPositif = false;
+                let hasNegatif = false;
+                let posMatch = null;
+                let negMatch = null;
+                
+                for (const word of pair.positif) {
+                    if (text.includes(word.toLowerCase())) {
+                        hasPositif = true;
+                        posMatch = word;
+                        break;
+                    }
+                }
+                
+                for (const word of pair.negatif) {
+                    if (text.includes(word.toLowerCase())) {
+                        hasNegatif = true;
+                        negMatch = word;
+                        break;
+                    }
+                }
+                
+                if (hasPositif && hasNegatif) {
+                    oppositionsFound.push({
+                        pair: pairName,
+                        positive: posMatch,
+                        negative: negMatch
+                    });
+                    score += 20;
+                }
+            }
+            
+            if (oppositionsFound.length > 0) {
+                analysis.matches.push({
+                    type: 'opposition',
+                    oppositions: oppositionsFound,
+                    count: oppositionsFound.length
+                });
+                analysis.types.push('opposition_' + oppositionsFound.length);
+            }
+            
+            // Bonus si plusieurs paires d'oppositions
+            if (oppositionsFound.length >= 2) {
+                score += 15;
+            }
+            
+            return Math.min(score, 75);
+        },
+        
+        /**
+         * Analyse les marqueurs linguistiques
+         */
+        analyzeMarkers(text, analysis) {
+            let score = 0;
+            
+            // Connecteurs de tension
+            for (const connector of this.paradoxMarkers.tensionConnectors) {
+                if (text.includes(connector.toLowerCase())) {
+                    score += 12;
+                    analysis.matches.push({
+                        type: 'marker',
+                        subtype: 'tension_connector',
+                        matched: connector
+                    });
+                }
+            }
+            
+            // Verbes de transformation
+            for (const verb of this.paradoxMarkers.transformationVerbs) {
+                if (text.includes(verb.toLowerCase())) {
+                    score += 10;
+                    analysis.matches.push({
+                        type: 'marker',
+                        subtype: 'transformation_verb',
+                        matched: verb
+                    });
+                }
+            }
+            
+            return Math.min(score, 50);
+        },
+        
+        /**
+         * Analyse la structure syntaxique
+         */
+        analyzeSyntax(text, analysis) {
+            let score = 0;
+            
+            // Structure "X dans Y" où X et Y sont opposés
+            const dansPattern = /(\w+)\s+dans\s+(?:la |le |l')?(\w+)/gi;
+            let match;
+            while ((match = dansPattern.exec(text)) !== null) {
+                if (this.areConceptsOpposed(match[1], match[2])) {
+                    score += 25;
+                    analysis.matches.push({
+                        type: 'syntax',
+                        structure: 'X_dans_Y',
+                        x: match[1],
+                        y: match[2]
+                    });
+                }
+            }
+            
+            // Structure "pour X, il faut Y" où X et Y sont opposés
+            const pourPattern = /pour\s+(?:obtenir |trouver |avoir )?(?:la |le |l')?(\w+).*?(?:il faut|faut-il|on doit|doit-on)\s+(?:la |le |l')?(\w+)/gi;
+            while ((match = pourPattern.exec(text)) !== null) {
+                if (this.areConceptsOpposed(match[1], match[2])) {
+                    score += 30;
+                    analysis.matches.push({
+                        type: 'syntax',
+                        structure: 'pour_X_faut_Y',
+                        x: match[1],
+                        y: match[2]
+                    });
+                }
+            }
+            
+            // Structure conditionnelle inversée
+            const siPattern = /(?:si|quand|lorsque)\s+(?:tu |vous |on |je )?(\w+).*?(?:alors |tu |vous |on )?(\w+)/gi;
+            while ((match = siPattern.exec(text)) !== null) {
+                if (this.areConceptsOpposed(match[1], match[2])) {
+                    score += 20;
+                    analysis.matches.push({
+                        type: 'syntax',
+                        structure: 'conditional_inverse',
+                        condition: match[1],
+                        result: match[2]
+                    });
+                }
+            }
+            
+            return Math.min(score, 60);
+        },
+        
+        /**
+         * Vérifie si deux concepts sont opposés
+         */
+        areConceptsOpposed(word1, word2) {
+            const w1 = word1.toLowerCase();
+            const w2 = word2.toLowerCase();
+            
+            for (const pair of Object.values(this.oppositionPairs)) {
+                const w1InPos = pair.positif.some(p => w1.includes(p) || p.includes(w1));
+                const w1InNeg = pair.negatif.some(n => w1.includes(n) || n.includes(w1));
+                const w2InPos = pair.positif.some(p => w2.includes(p) || p.includes(w2));
+                const w2InNeg = pair.negatif.some(n => w2.includes(n) || n.includes(w1));
+                
+                if ((w1InPos && w2InNeg) || (w1InNeg && w2InPos)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        
+        /**
+         * Génère une explication du paradoxe détecté
+         */
+        generateExplanation(analysis) {
+            const explanations = [];
+            
+            const typeDescriptions = {
+                'transformation_inverse': 'Paradoxe de transformation : ce qui semble négatif devient source de positif',
+                'coexistence': 'Paradoxe de coexistence : deux réalités apparemment contradictoires cohabitent',
+                'kenose': 'Paradoxe kénotique : la puissance divine se manifeste dans la faiblesse',
+                'fana_baqa': 'Paradoxe soufique : l\'anéantissement du moi ouvre à la subsistance en Dieu',
+                'union_mystique': 'Paradoxe d\'union : la distance infinie coexiste avec l\'intimité absolue'
+            };
+            
+            for (const type of [...new Set(analysis.types)]) {
+                if (typeDescriptions[type]) {
+                    explanations.push(typeDescriptions[type]);
+                }
+            }
+            
+            const oppositionMatches = analysis.matches.filter(m => m.type === 'opposition');
+            if (oppositionMatches.length > 0) {
+                const ops = oppositionMatches[0].oppositions;
+                const opsList = ops.map(o => `${o.positive}/${o.negative}`).join(', ');
+                explanations.push(`Tensions mystiques détectées : ${opsList}`);
+            }
+            
+            return explanations;
+        }
+    };
+
+    // ========================================
+    // GESTIONNAIRE DE L'INTERFACE
+    // ========================================
+
+    const UIManager = {
+        elements: {},
+        
+        init() {
+            this.elements = {
+                fileInput: document.getElementById('file-input'),
+                fileName: document.getElementById('file-name'),
+                themeInput: document.getElementById('theme-input'),
+                countInput: document.getElementById('count-input'),
+                useAI: document.getElementById('use-ai'),
+                strictMode: document.getElementById('strict-mode'),
+                extractBtn: document.getElementById('extract-btn'),
+                loading: document.getElementById('loading'),
+                results: document.getElementById('results'),
+                resultsContainer: document.getElementById('results-container'),
+                debugPanel: document.getElementById('debug-panel'),
+                debugContent: document.getElementById('debug-content')
+            };
+            
+            this.bindEvents();
+        },
+        
+        bindEvents() {
+            this.elements.fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                this.elements.fileName.textContent = file ? file.name : 'Aucun fichier';
+            });
+            
+            this.elements.extractBtn.addEventListener('click', () => this.extract());
+        },
+        
+        showLoading(show) {
+            this.elements.loading.classList.toggle('hidden', !show);
+            this.elements.extractBtn.disabled = show;
+        },
+        
+        showResults(citations, analyses) {
+            this.elements.results.classList.remove('hidden');
+            this.elements.resultsContainer.innerHTML = '';
+            
+            if (citations.length === 0) {
+                this.elements.resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        Aucun paradoxe mystique trouvé avec les critères actuels.
+                        <br><small>Essayez de désactiver le "Mode strict" pour des résultats plus larges.</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            citations.forEach((citation, index) => {
+                const analysis = analyses[index];
+                const card = this.createCitationCard(citation, analysis);
+                this.elements.resultsContainer.appendChild(card);
+            });
+        },
+        
+        createCitationCard(citation, analysis) {
+            const card = document.createElement('div');
+            card.className = 'citation-card';
+            
+            const scoreClass = analysis.score >= 80 ? 'score-high' : 
+                              analysis.score >= 60 ? 'score-medium' : 'score-low';
+            
+            const typeLabels = {
+                'transformation_inverse': '🔄 Transformation',
+                'coexistence': '☯️ Coexistence',
+                'kenose': '✝️ Kénose',
+                'fana_baqa': '☪️ Fanā/Baqā',
+                'union_mystique': '💫 Union mystique'
+            };
+            
+            const typeBadges = [...new Set(analysis.types)]
+                .filter(t => typeLabels[t])
+                .map(t => `<span class="type-badge">${typeLabels[t]}</span>`)
+                .join('');
+            
+            card.innerHTML = `
+                <div class="citation-header">
+                    <span class="citation-source">${citation.source || 'Source inconnue'}</span>
+                    <span class="citation-score ${scoreClass}">${analysis.score}%</span>
+                </div>
+                <div class="citation-text">"${citation.texte || citation.text || citation}"</div>
+                <div class="citation-reference">${citation.reference || ''}</div>
+                ${typeBadges ? `<div class="citation-types">${typeBadges}</div>` : ''}
+                ${analysis.explanation.length > 0 ? `
+                    <div class="citation-explanation">
+                        <strong>Analyse :</strong><br>
+                        ${analysis.explanation.join('<br>')}
+                    </div>
+                ` : ''}
+            `;
+            
+            return card;
+        },
+        
+        showDebug(analyses) {
+            if (!this.elements.debugPanel) return;
+            
+            this.elements.debugPanel.classList.remove('hidden');
+            this.elements.debugContent.innerHTML = analyses.map((a, i) => `
+                <div class="debug-item">
+                    <strong>Citation ${i + 1}</strong> - Score: ${a.score}%<br>
+                    Types: ${a.types.join(', ') || 'aucun'}<br>
+                    Matches: ${a.matches.length}
+                </div>
+            `).join('');
+        },
+        
+        async extract() {
+            const theme = this.elements.themeInput.value.trim();
+            const count = parseInt(this.elements.countInput.value) || 5;
+            const useAI = this.elements.useAI.checked;
+            const strictMode = this.elements.strictMode.checked;
+            const file = this.elements.fileInput.files[0];
+            
+            this.showLoading(true);
+            this.elements.results.classList.add('hidden');
+            
+            try {
+                let citations = [];
+                
+                if (file) {
+                    citations = await DataManager.loadFromFile(file);
+                } else {
+                    citations = await DataManager.loadFromLibrary(theme);
+                }
+                
+                // Analyse de chaque citation
+                let analysedCitations = citations.map(c => {
+                    const text = c.texte || c.text || (typeof c === 'string' ? c : '');
+                    return {
+                        citation: c,
+                        analysis: ParadoxEngine.analyzeParadox(text, strictMode)
+                    };
+                });
+                
+                // Filtrer les vrais paradoxes
+                analysedCitations = analysedCitations.filter(ac => ac.analysis.isParadox);
+                
+                // Trier par score décroissant
+                analysedCitations.sort((a, b) => b.analysis.score - a.analysis.score);
+                
+                // Limiter au nombre demandé
+                analysedCitations = analysedCitations.slice(0, count);
+                
+                // Utiliser l'IA pour affiner si demandé
+                if (useAI && analysedCitations.length > 0) {
+                    analysedCitations = await AIManager.refineSelection(
+                        analysedCitations, 
+                        theme, 
+                        count
+                    );
+                }
+                
+                const finalCitations = analysedCitations.map(ac => ac.citation);
+                const finalAnalyses = analysedCitations.map(ac => ac.analysis);
+                
+                this.showResults(finalCitations, finalAnalyses);
+                this.showDebug(finalAnalyses);
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'extraction:', error);
+                this.elements.resultsContainer.innerHTML = `
+                    <div class="error-message">
+                        Erreur: ${error.message}
+                    </div>
+                `;
+                this.elements.results.classList.remove('hidden');
+            } finally {
+                this.showLoading(false);
+            }
+        }
+    };
+
+    // ========================================
+    // GESTIONNAIRE DE DONNÉES
+    // ========================================
+
+    const DataManager = {
+        libraryUrls: [
+            'https://raw.githubusercontent.com/votre-repo/data/bible.json',
+            'https://raw.githubusercontent.com/votre-repo/data/coran.json',
+            'https://raw.githubusercontent.com/votre-repo/data/mystiques.json'
+        ],
+        
+        async loadFromFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = (e) => {
+                    try {
+                        const content = e.target.result;
+                        
+                        if (file.name.endsWith('.json')) {
+                            const data = JSON.parse(content);
+                            resolve(Array.isArray(data) ? data : data.citations || [data]);
+                        } else if (file.name.endsWith('.txt')) {
+                            const lines = content.split('\n').filter(l => l.trim());
+                            resolve(lines.map(l => ({ texte: l })));
+                        } else {
+                            reject(new Error('Format de fichier non supporté'));
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                
+                reader.onerror = () => reject(new Error('Erreur de lecture du fichier'));
+                reader.readAsText(file);
+            });
+        },
+        
+        async loadFromLibrary(theme) {
+            const allCitations = [];
+            
+            for (const url of this.libraryUrls) {
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const citations = Array.isArray(data) ? data : data.citations || [];
+                        allCitations.push(...citations);
+                    }
+                } catch (err) {
+                    console.warn(`Impossible de charger ${url}:`, err);
+                }
+            }
+            
+            // Filtrer par thème si spécifié
+            if (theme) {
+                const themeWords = theme.toLowerCase().split(/\s+/);
+                return allCitations.filter(c => {
+                    const text = (c.texte || c.text || '').toLowerCase();
+                    return themeWords.some(w => text.includes(w));
+                });
+            }
+            
+            return allCitations;
+        }
+    };
+
+    // ========================================
+    // GESTIONNAIRE IA (OpenRouter via HuggingFace)
+    // ========================================
+
+    const AIManager = {
+        proxyUrl: 'https://votre-proxy.hf.space/api/generate',
+        
+        async refineSelection(analysedCitations, theme, count) {
+            try {
+                const prompt = this.buildPrompt(analysedCitations, theme);
+                
+                const response = await fetch(this.proxyUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        max_tokens: 500
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Erreur API');
+                }
+                
+                const data = await response.json();
+                const selectedIndices = this.parseAIResponse(data.text || data.response);
+                
+                if (selectedIndices.length > 0) {
+                    return selectedIndices
+                        .filter(i => i < analysedCitations.length)
+                        .map(i => analysedCitations[i])
+                        .slice(0, count);
+                }
+                
+                return analysedCitations.slice(0, count);
+                
+            } catch (error) {
+                console.warn('IA non disponible, utilisation de l\'analyse locale:', error);
+                return analysedCitations.slice(0, count);
+            }
+        },
+        
+        buildPrompt(analysedCitations, theme) {
+            const citationsList = analysedCitations.map((ac, i) => {
+                const text = ac.citation.texte || ac.citation.text || '';
+                return `[${i}] "${text.substring(0, 200)}..." (Score local: ${ac.analysis.score}%)`;
+            }).join('\n');
+            
+            return `Tu es un expert en mystique chrétienne et soufie. Voici des citations pré-analysées.
+Un vrai paradoxe mystique unit des contraires (vie/mort, force/faiblesse, présence/absence) 
+dans une vérité spirituelle transcendante, pas une simple contradiction.
+
+Thème recherché: ${theme || 'général'}
+
+Citations:
+${citationsList}
+
+Réponds UNIQUEMENT avec les numéros des citations qui sont de VRAIS paradoxes mystiques, 
+séparés par des virgules. Exemple: 0, 2, 5`;
+        },
+        
+        parseAIResponse(text) {
+            const numbers = text.match(/\d+/g);
+            return numbers ? numbers.map(n => parseInt(n)) : [];
+        }
+    };
+
+    // ========================================
+    // INITIALISATION
+    // ========================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+        UIManager.init();
+    });
+    </script>
+
+    <style>
+    /* Styles additionnels pour les nouvelles fonctionnalités */
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px 0;
+    }
+    
+    .citation-card {
+        background: #1a1a2e;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        border-left: 4px solid #6c5ce7;
+    }
+    
+    .citation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    
+    .citation-source {
+        font-size: 0.85em;
+        color: #a29bfe;
+        font-weight: 600;
+    }
+    
+    .citation-score {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+    
+    .score-high { background: #00b894; color: white; }
+    .score-medium { background: #fdcb6e; color: #2d3436; }
+    .score-low { background: #e17055; color: white; }
+    
+    .citation-text {
+        font-size: 1.1em;
+        line-height: 1.6;
+        color: #dfe6e9;
+        font-style: italic;
+        margin-bottom: 12px;
+    }
+    
+    .citation-reference {
+        font-size: 0.85em;
+        color: #74b9ff;
+        margin-bottom: 12px;
+    }
+    
+    .citation-types {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .type-badge {
+        background: rgba(108, 92, 231, 0.3);
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 0.75em;
+        color: #a29bfe;
+    }
+    
+    .citation-explanation {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.85em;
+        color: #b2bec3;
+        line-height: 1.5;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #636e72;
+    }
+    
+    .error-message {
+        background: rgba(214, 48, 49, 0.2);
+        border: 1px solid #d63031;
+        padding: 20px;
+        border-radius: 8px;
+        color: #ff7675;
+    }
+    
+    .debug-panel {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        font-size: 0.8em;
+    }
+    
+    .debug-item {
+        padding: 8px;
+        margin: 5px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+    }
+    </style>
+</body>
+</html>
