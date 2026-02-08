@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracteur de Paradoxes Mystiques (Distillation 2-2-1)</title>
+    <style>
+        :root {
+            --primary: #764ba2;
+            --secondary: #667eea;
+            --accent: #ff9a9e;
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --text-main: #2d3436;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .search-mode-selector {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            flex: 1;
+            max-width: 250px;
+            cursor: pointer;
+        }
+
+        .mode-btn input[type="radio"] {
+            display: none;
+        }
+
+        .mode-content {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #eee;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mode-btn input[type="radio"]:checked+.mode-content {
+            border-color: var(--primary);
+            background: rgba(118, 75, 162, 0.05);
+            transform: scale(1.05);
+        }
+
+        .mode-icon {
+            font-size: 2em;
+        }
+
+        .mode-text {
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        .upload-section {
+            background: rgba(102, 126, 234, 0.05);
+            border: 3px dashed var(--secondary);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .file-label {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .options-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 15px 25px;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            width: 100%;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: all 0.3s;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .citation {
+            background: white;
+            border-left: 8px solid var(--primary);
+            padding: 35px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .citation-text {
+            font-size: 1.3em;
+            font-style: italic;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .citation-source {
+            font-size: 0.9em;
+            color: #777;
+            font-weight: 600;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .info {
+            background: #edf2ff;
+            color: #4c6ef5;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .error {
+            background: #fff5f5;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <h1>📖 Distillateur de Paradoxes</h1>
+
+        <div class="search-mode-selector">
+            <label class="mode-btn">
+                <input type="radio" name="searchMode" id="modeLocal" checked>
+                <div class="mode-content">
+                    <span class="mode-icon">💾</span>
+                    <span class="mode-text">Local</span>
+                </div>
+            </label>
+            <label class="mode-btn">
+                <input type="radio" name="searchMode" id="modeOnline">
+                <div class="mode-content">
+                    <span class="mode-icon">🌐</span>
+                    <span class="mode-text">Bibliothèque</span>
+                </div>
+            </label>
+        </div>
+
+        <div id="localSection">
+            <div class="upload-section">
+                <label for="fileInput" class="file-label">Choisir un fichier (PDF, TXT, JSON)</label>
+                <input type="file" id="fileInput" style="display:none">
+                <p id="fileName" style="margin-top:10px; color:#666">Aucun fichier</p>
+            </div>
+        </div>
+
+        <div id="onlineSection" style="display:none">
+            <div class="info">Recherche dans la bibliothèque GitHub (Distribution 2-2-1 automatique)</div>
+        </div>
+
+        <div class="options-section">
+            <div class="full-width">
+                <label>Thème ou mot-clé (ex: lumière, mort, silence) :</label>
+                <input type="text" id="keywordInput" placeholder="Optionnel en local, conseillé en ligne">
+            </div>
+            <div>
+                <label>Nombre de citations :</label>
+                <input type="number" id="numCitations" value="5" min="1" max="20">
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; padding-top:25px">
+                <input type="checkbox" id="useAI" checked>
+                <label for="useAI">Utiliser l'IA (Sélection d'index exacte)</label>
+            </div>
+        </div>
+
+        <button id="extractBtn">EXTRAIRE LES PARADOXES</button>
+
+        <div id="status"></div>
+        <div id="results"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/dictionnaireS/livres/main';
+        const CATALOG_FILENAME = 'LIVRES/index_master.json';
+        const PROXY_URL = "https://gildasr-dictionnaires.hf.space/api/chat";
+        const OPENROUTER_MODELS = ["meta-llama/llama-3.3-70b-instruct:free", "google/gemini-2.0-pro-exp-02-05:free", "mistralai/mistral-small-3.1-24b-instruct:free"];
+
+        const vocabulaireReligieux = ['dieu', 'allah', 'christ', 'seigneur', 'âme', 'esprit', 'saint', 'mystique', 'soufi', 'foi', 'grâce', 'mort', 'vie', 'silence', 'lumière', 'ténèbres', 'vide', 'plein', 'néant', 'fana', 'baqa', 'tawhid', 'zahir', 'batin', 'kénose', 'incarnation', 'croix'];
+
+        let selectedFile = null;
+        let fileContent = "";
+
+        const modeLocal = document.getElementById('modeLocal');
+        const modeOnline = document.getElementById('modeOnline');
+        const localSection = document.getElementById('localSection');
+        const onlineSection = document.getElementById('onlineSection');
+        const fileInput = document.getElementById('fileInput');
+        const extractBtn = document.getElementById('extractBtn');
+        const resultsDiv = document.getElementById('results');
+        const statusDiv = document.getElementById('status');
+
+        modeLocal.onchange = () => { localSection.style.display = 'block'; onlineSection.style.display = 'none'; };
+        modeOnline.onchange = () => { localSection.style.display = 'none'; onlineSection.style.display = 'block'; };
+
+        fileInput.onchange = (e) => {
+            selectedFile = e.target.files[0];
+            document.getElementById('fileName').textContent = selectedFile ? selectedFile.name : "Aucun fichier";
+        };
+
+        extractBtn.onclick = async () => {
+            resultsDiv.innerHTML = "";
+            statusDiv.innerHTML = "";
+            const keyword = document.getElementById('keywordInput').value.trim();
+            const num = parseInt(document.getElementById('numCitations').value) || 5;
+            const useAI = document.getElementById('useAI').checked;
+
+            try {
+                let candidates = [];
+
+                if (modeLocal.checked) {
+                    if (!selectedFile) throw new Error("Veuillez choisir un fichier local.");
+                    showStatus("Lecture du fichier...", "loading");
+                    fileContent = await readLocalFile(selectedFile);
+                    candidates = extractCitations(fileContent, keyword, useAI ? 50 : num);
+                    candidates.forEach(c => c.source = selectedFile.name);
+                } else {
+                    showStatus("Connexion à la bibliothèque...", "loading");
+                    const indexRes = await fetch(`${GITHUB_BASE_URL}/${CATALOG_FILENAME}`);
+                    const index = await indexRes.json();
+                    const books = Array.isArray(index) ? index : (index.livres || []);
+
+                    let selectedBooks = [];
+
+                    // Scoring intelligent des livres - Focus mystique
+                    const scoredBooks = books.map(b => {
+                        let score = 0;
+                        const meta = (b.titre + ' ' + (b.mots_cles || '') + ' ' + (b.themes || '')).toLowerCase();
+
+                        // BONUS MASSIF : Ouvrages mystiques authentiques
+                        if (meta.includes('mystique')) score += 60;
+                        if (meta.includes('vie intérieure')) score += 45;
+                        if (meta.includes('soufisme') || meta.includes('soufi')) score += 60;
+                        if (meta.includes('contemplation')) score += 40;
+                        if (meta.includes('spiritualité')) score += 35;
+                        if (meta.includes('kénose') || meta.includes('kenose')) score += 55;
+                        if (meta.includes('fanā') || meta.includes('fana')) score += 55;
+                        if (meta.includes('tawhid') || meta.includes('tawhîd')) score += 50;
+                        if (meta.includes('apophatique') || meta.includes('théologie négative')) score += 50;
+                        if (meta.includes('nuit obscure')) score += 45;
+
+                        // MALUS : Ouvrages non-mystiques
+                        if (meta.includes('catéchisme')) score -= 50;
+                        if (meta.includes('dogmatique')) score -= 40;
+                        if (meta.includes('histoire')) score -= 25;
+                        if (meta.includes('théologie morale')) score -= 30;
+                        if (meta.includes('droit canon')) score -= 40;
+                        if (meta.includes('liturgie')) score -= 20;
+
+                        // Correspondance avec le mot-clé
+                        if (keyword && meta.includes(keyword.toLowerCase())) score += 30;
+
+                        return { ...b, score };
+                    });
+
+                    // Tri et sélection des 3 meilleurs
+                    selectedBooks = scoredBooks
+                        .sort((a, b) => b.score - a.score)
+                        .slice(0, 3);
+
+                    showStatus(`Livres : ${selectedBooks.map(b => b.titre).join(', ')}`, "info");
+
+                    for (const book of selectedBooks) {
+                        const path = book.fichier || book.fichier_source;
+                        const fullPath = path.includes('/') ? path : `LIVRES/${path}`;
+                        const bRes = await fetch(`${GITHUB_BASE_URL}/${fullPath}`);
+                        const bData = await bRes.json();
+                        const bText = bData.texte_integral || (Array.isArray(bData.contenu) ? bData.contenu.join(' ') : bData.contenu);
+                        const bCands = extractCitations(bText, keyword, 20);
+                        bCands.forEach(c => c.source = book.titre);
+                        candidates = candidates.concat(bCands);
+                    }
+                }
+
+                if (candidates.length === 0) throw new Error("Aucune citation trouvée.");
+
+                let final = [];
+                if (useAI) {
+                    final = await processWithAI(candidates, keyword, num);
+                } else {
+                    final = candidates.sort((a, b) => b.score - a.score).slice(0, num);
+                }
+
+                display(final);
+            } catch (e) {
+                showStatus(e.message, "error");
+            }
+        };
+
+        async function readLocalFile(file) {
+            if (file.name.endsWith('.pdf')) {
+                const doc = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+                let t = "";
+                for (let i = 1; i <= doc.numPages; i++) t += (await (await doc.getPage(i)).getTextContent()).items.map(it => it.str).join(' ') + " ";
+                return t;
+            }
+            return await file.text();
+        }
+
+        function extractCitations(text, keyword, limit) {
+            const phrases = text.match(/[^.!?]+[.!?]+/g) || [];
+            return phrases
+                .map(p => p.trim())
+                .filter(p => p.length > 30 && p.length < 400)
+                .filter(p => vocabulaireReligieux.some(v => p.toLowerCase().includes(v)))
+                .map(p => ({ phrase: p, score: calculateParadoxScore(p, keyword) }))
+                .filter(p => p.score > 0) // Rejeter les scores négatifs
+                .sort((a, b) => b.score - a.score)
+                .slice(0, limit);
+        }
+
+        function calculateParadoxScore(p, k) {
+            let s = 0;
+            const lp = p.toLowerCase();
+
+            // ═══════════════════════════════════════════════════════════
+            // PHASE 1 : REJETS MASSIFS (Langage non-mystique)
+            // ═══════════════════════════════════════════════════════════
+
+            // Langage pédagogique/catéchétique (REJET TOTAL)
+            const pedagogique = [
+                'consiste à', 'signifie que', 'c\'est-à-dire', 'permet de', 'est nécessaire',
+                'il faut', 'on doit', 'nous devons', 'il convient', 'il importe',
+                'ne fait pas seulement', 'autrement dit', 'en d\'autres termes',
+                'cela veut dire', 'ceci signifie', 'on peut dire que', 'il s\'agit de',
+                'définit comme', 'se définit', 'par définition', 'on entend par'
+            ];
+            for (let ped of pedagogique) {
+                if (lp.includes(ped)) s -= 60; // Pénalité écrasante
+            }
+
+            // Langage dogmatique/doctrinal
+            const dogmatique = [
+                'le concile', 'l\'église enseigne', 'la doctrine', 'le dogme',
+                'selon le catéchisme', 'la tradition affirme', 'le magistère'
+            ];
+            for (let dog of dogmatique) {
+                if (lp.includes(dog)) s -= 50;
+            }
+
+            // Structures temporelles banales (succession chronologique)
+            if (/(après|puis|ensuite|alors).{5,40}(vient|arrive|fut|devint|survient)/i.test(p)) s -= 35;
+            if (/d'abord.{10,50}ensuite/i.test(p)) s -= 30;
+
+            // Phrases trop longues (dilution du mystère)
+            if (p.length > 200) s -= 25;
+            if (p.length > 280) s -= 40;
+            if (p.length > 350) s -= 60;
+
+            // Énumérations (liste de concepts sans tension)
+            if ((p.match(/,/g) || []).length > 3) s -= 20;
+
+            // ═══════════════════════════════════════════════════════════
+            // PHASE 2 : DÉTECTION DES PARADOXES AUTHENTIQUES
+            // ═══════════════════════════════════════════════════════════
+
+            // ═══ A. PARADOXES KÉNOTIQUES (Mystique chrétienne) ═══
+            // Principe : La force dans la faiblesse, la vie dans la mort
+            const kenotiques = [
+                // Mort/Vie - Le cœur de la kénose
+                {
+                    r: /(mourir|mort|crucifi|agonie).{0,60}(vivre|vie|vivant|ressuscit|renaissance)/i,
+                    proche: /(mourir|mort).{0,20}(vivre|vie)/i,
+                    v: 30, vProche: 65
+                },
+                // Perdre/Gagner - Logique évangélique inversée
+                {
+                    r: /(perdre|perd|perdu|abandon).{0,60}(gagner|trouver|trouve|sauver|retrouv)/i,
+                    proche: /(perdre|perd).{0,20}(gagner|trouver)/i,
+                    v: 30, vProche: 65
+                },
+                // Faiblesse/Force - 2 Co 12,9
+                {
+                    r: /(faible|faiblesse|impuissance).{0,60}(fort|force|puissance|puissant)/i,
+                    proche: /(faible|faiblesse).{0,20}(fort|force|puissance)/i,
+                    v: 30, vProche: 65
+                },
+                // Dernier/Premier - Renversement eschatologique
+                {
+                    r: /(serviteur|esclave|dernier|petit).{0,60}(maître|roi|seigneur|premier|grand)/i,
+                    proche: /(serviteur|dernier).{0,20}(maître|premier)/i,
+                    v: 28, vProche: 60
+                },
+                // Pauvreté/Richesse - Béatitudes
+                {
+                    r: /(pauvre|pauvreté|dénuement|dépouill).{0,60}(riche|richesse|trésor|abondance)/i,
+                    proche: /(pauvre|pauvreté).{0,20}(riche|richesse)/i,
+                    v: 25, vProche: 55
+                },
+                // Vide/Plénitude - Kénose christique
+                {
+                    r: /(vide|néant|rien|dépouill).{0,60}(plein|plénitude|tout|combl)/i,
+                    proche: /(vide|néant).{0,20}(plein|plénitude|tout)/i,
+                    v: 30, vProche: 65
+                }
+            ];
+
+            for (let ken of kenotiques) {
+                if (ken.proche && ken.proche.test(p)) {
+                    s += ken.vProche; // Choc syntaxique immédiat = fulgurance
+                } else if (ken.r.test(p)) {
+                    s += ken.v; // Paradoxe dilué mais présent
+                }
+            }
+
+            // ═══ B. PARADOXES SOUFIS (Tawhīd, Fanā'/Baqā') ═══
+            // Principe : L'anéantissement qui est subsistance, le Caché qui est Manifeste
+            const soufis = [
+                // Fanā'/Baqā' - Cœur du soufisme
+                {
+                    r: /(anéantir|anéantissement|fanā|fana|disparaître).{0,60}(subsister|subsistance|baqā|baqa|être|demeurer|persister)/i,
+                    proche: /(anéantir|fanā|fana).{0,20}(subsister|baqā|baqa)/i,
+                    v: 35, vProche: 70
+                },
+                // Bāṭin/Ẓāhir - Noms divins paradoxaux
+                {
+                    r: /(caché|bātin|batin|voilé|secret|invisible).{0,60}(apparent|manifeste|zāhir|zahir|révélé|visible)/i,
+                    proche: /(caché|bātin|batin).{0,20}(apparent|zāhir|zahir|manifeste)/i,
+                    v: 35, vProche: 70
+                },
+                // Distance/Proximité - Coran 50:16
+                {
+                    r: /(loin|distant|inaccessible|transcendant).{0,60}(proche|proximité|intime|veine|immanent)/i,
+                    proche: /(loin|distant).{0,20}(proche|intime)/i,
+                    v: 30, vProche: 65
+                },
+                // Unité/Multiplicité - Tawhīd mystique
+                {
+                    r: /(un|unité|tawhīd|tawhid|unique).{0,60}(multiple|multiplicité|diversité|pluriel)/i,
+                    proche: /(un|unité).{0,20}(multiple|multiplicité)/i,
+                    v: 25, vProche: 55
+                }
+            ];
+
+            for (let suf of soufis) {
+                if (suf.proche && suf.proche.test(p)) {
+                    s += suf.vProche;
+                } else if (suf.r.test(p)) {
+                    s += suf.v;
+                }
+            }
+
+            // ═══ C. PARADOXES APOPHATIQUES (Théologie négative) ═══
+            // Principe : Dire l'indicible, connaître par l'ignorance
+            const apophatiques = [
+                // Indicible/Dire
+                {
+                    r: /(indicible|ineffable|innommable|inexprimable).{0,60}(dire|nommer|parler|exprimer|prononcer)/i,
+                    proche: /(indicible|ineffable).{0,20}(dire|nommer)/i,
+                    v: 35, vProche: 65
+                },
+                // Ténèbres/Lumière - Nuit obscure
+                {
+                    r: /(ténèbres|nuit|obscur|noir).{0,60}(lumière|illumin|éclair|clarté|jour)/i,
+                    proche: /(ténèbres|nuit|obscur).{0,20}(lumière|illumin)/i,
+                    v: 30, vProche: 65
+                },
+                // Ignorance/Connaissance - Docte ignorance
+                {
+                    r: /(ignor|ne pas savoir|ne rien savoir).{0,60}(savoir|connaissance|sagesse|connaître)/i,
+                    proche: /(ignor).{0,20}(savoir|connaissance)/i,
+                    v: 30, vProche: 60
+                },
+                // Silence/Parole
+                {
+                    r: /(silence|muet|taire|se taire).{0,60}(parole|dire|parler|verbe|mot)/i,
+                    proche: /(silence|muet).{0,20}(parole|verbe|dire)/i,
+                    v: 25, vProche: 55
+                },
+                // Absence/Présence
+                {
+                    r: /(absence|absent|manque).{0,60}(présence|présent|plénitude)/i,
+                    proche: /(absence|absent).{0,20}(présence|présent)/i,
+                    v: 28, vProche: 60
+                }
+            ];
+
+            for (let apo of apophatiques) {
+                if (apo.proche && apo.proche.test(p)) {
+                    s += apo.vProche;
+                } else if (apo.r.test(p)) {
+                    s += apo.v;
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════
+            // PHASE 3 : BONUS STYLISTIQUES (Densité mystique)
+            // ═══════════════════════════════════════════════════════════
+
+            // Brièveté = Fulgurance (aphorisme mystique)
+            if (p.length >= 30 && p.length <= 80) s += 30; // Fulgurance pure
+            else if (p.length > 80 && p.length <= 140) s += 15; // Très bon
+            else if (p.length > 140 && p.length <= 200) s += 5; // Acceptable
+
+            // Structures dialectiques (mais, pourtant, cependant)
+            if (/\bmais\b|\bpourtant\b|\bcependant\b|\btoutefois\b|\bnéanmoins\b/i.test(p)) s += 12;
+
+            // Négations paradoxales (ne...que, non...mais)
+            if (/\bne\b.{5,40}\bque\b/i.test(p)) s += 10;
+            if (/\bnon\b.{5,40}\bmais\b/i.test(p)) s += 12;
+
+            // Bonus mot-clé utilisateur
+            if (k && lp.includes(k.toLowerCase())) s += 18;
+
+            // Vocabulaire mystique dense
+            const termesMystiques = ['mystère', 'ineffable', 'transcendant', 'immanent', 'union', 'extase', 'contemplation'];
+            for (let tm of termesMystiques) {
+                if (lp.includes(tm)) s += 8;
+            }
+
+            return s;
+        }
+
+        async function processWithAI(candidates, keyword, total) {
+            const groups = {};
+            candidates.forEach(c => { if (!groups[c.source]) groups[c.source] = []; groups[c.source].push(c); });
+            const sources = Object.keys(groups);
+
+            if (sources.length < 3 || total !== 5) {
+                return await runAI(candidates.slice(0, 30), keyword, total);
+            }
+
+            // Distribution 2-2-1
+            showStatus("Distillation IA (Répartition 2-2-1)...", "loading");
+            let results = [];
+            const dist = [2, 2, 1];
+            for (let i = 0; i < 3; i++) {
+                const sub = await runAI(groups[sources[i]].slice(0, 15), keyword, dist[i]);
+                sub.forEach(r => r.source = sources[i]);
+                results = results.concat(sub);
+            }
+            return results;
+        }
+
+        async function runAI(cands, key, num) {
+            const text = cands.map((c, i) => `[ID:${i}] ${c.phrase}`).join('\n');
+            const prompt = `Tu es un expert en mystique chrétienne et soufie. Ta mission : sélectionner ${num} FULGURANCES PARADOXALES parmi les textes ci-dessous.
+
+═══════════════════════════════════════════════════════════════════════════════
+QU'EST-CE QU'UN PARADOXE MYSTIQUE AUTHENTIQUE ?
+═══════════════════════════════════════════════════════════════════════════════
+Ce N'EST PAS une contradiction illogique, mais une VÉRITÉ TROP VASTE pour être saisie par la raison ordinaire.
+C'est une affirmation où DEUX RÉALITÉS APPAREMMENT CONTRADICTOIRES se rejoignent dans l'union à Dieu, 
+au-delà des catégories de la raison.
+
+═══ DANS LA MYSTIQUE CHRÉTIENNE (KÉNOSE) ═══
+Le mystère de l'Incarnation et de la Croix révèle que :
+• La FORCE se déploie dans la FAIBLESSE (2 Co 12,9)
+• On ne GAGNE sa vie qu'en acceptant de la PERDRE par amour (Mc 8,35)
+• Le DERNIER devient PREMIER, le SERVITEUR devient ROI (Mt 20,16)
+• La MORT donne la VIE (Jn 12,24)
+• Le VIDE est PLÉNITUDE (kénose philippienne)
+
+═══ DANS LA MYSTIQUE MUSULMANE (SOUFISME) ═══
+La tension de l'Unicité (Tawhīd) où le chercheur réalise que :
+• Dieu est simultanément le plus CACHÉ (Al-Bāṭin) et le plus APPARENT (Al-Ẓāhir)
+• L'ANÉANTISSEMENT du moi (fanā') est l'unique porte vers la véritable SUBSISTANCE en Lui (baqā')
+• La DISTANCE infinie entre Créateur et créature coexiste avec l'intimité divine 
+  "plus proche que la veine jugulaire" (Coran 50:16)
+• L'UNITÉ divine contient toute MULTIPLICITÉ
+
+═══ DANS LA THÉOLOGIE APOPHATIQUE (Négative) ═══
+• L'INDICIBLE doit être DIT
+• Les TÉNÈBRES ILLUMINENT (nuit obscure de Jean de la Croix)
+• L'IGNORANCE est CONNAISSANCE (docte ignorance de Nicolas de Cues)
+• Le SILENCE est PAROLE
+• L'ABSENCE est PRÉSENCE
+
+═══════════════════════════════════════════════════════════════════════════════
+❌ CE QUE TU DOIS IMPITOYABLEMENT REJETER
+═══════════════════════════════════════════════════════════════════════════════
+1. TOUT ce qui peut être enseigné dans une salle de catéchisme
+2. Les EXPLICATIONS théologiques ("consiste à", "signifie que", "permet de", "c'est-à-dire")
+3. Les DÉFINITIONS dogmatiques ("le baptême est...", "la grâce confère...", "le sacrement définit...")
+4. Les contrastes temporels banals ("après la nuit vient le jour", "puis ensuite arrive...")
+5. Les phrases LONGUES et diluées (> 150 caractères = suspect, > 200 = rejet quasi-certain)
+6. Les énumérations doctrinales (listes de concepts sans tension paradoxale)
+
+EXEMPLES À REJETER ABSOLUMENT :
+❌ "Le baptême ne fait pas seulement participer à la mort du Christ, mais au Christ Lui-même"
+   → Explication catéchétique, pas de choc paradoxal
+❌ "Mourir à la condition déchue et renaître à la condition régénérée"
+   → Langage théologique explicatif
+❌ "Après les ténèbres vient la lumière"
+   → Succession temporelle banale, pas de paradoxe
+❌ "La grâce consiste à recevoir la vie divine"
+   → Définition pédagogique
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ CE QUE TU DOIS CHERCHER (FULGURANCES)
+═══════════════════════════════════════════════════════════════════════════════
+• APHORISMES courts et denses (< 100 caractères = idéal, < 150 = acceptable)
+• CHOC syntaxique immédiat : les contraires se TOUCHENT dans la même phrase
+• Phrases qui DÉFIENT la raison SANS l'expliquer
+• Tension MAINTENUE, jamais résolue par une explication
+• Formulation POÉTIQUE, non didactique
+
+EXEMPLES À PRIVILÉGIER :
+✅ "Mourir pour vivre" (8 mots, choc pur)
+✅ "La force dans la faiblesse" (5 mots, paradoxe paulinien)
+✅ "Perdre sa vie pour la trouver" (6 mots, logique inversée)
+✅ "S'anéantir pour subsister en Lui" (5 mots, fanā'/baqā')
+✅ "Le Caché est le Manifeste" (5 mots, Bāṭin/Ẓāhir)
+✅ "La nuit obscure illumine" (4 mots, apophatique)
+✅ "Dans le vide, la plénitude" (5 mots, kénose)
+
+═══════════════════════════════════════════════════════════════════════════════
+LISTE DES CANDIDATS
+═══════════════════════════════════════════════════════════════════════════════
+${text}
+
+═══════════════════════════════════════════════════════════════════════════════
+CONSIGNE FINALE
+═══════════════════════════════════════════════════════════════════════════════
+Sélectionne EXACTEMENT ${num} citations qui sont des CHOCS pour l'esprit.
+Privilégie la BRIÈVETÉ et la DENSITÉ.
+Recopie-les RIGOUREUSEMENT avec leur [ID:x].
+
+Format strict : [ID:x] Texte exact de la citation
+AUCUN commentaire, AUCUNE explication, AUCUNE analyse.
+
+Réponds maintenant :`;
+
+            for (const model of OPENROUTER_MODELS) {
+                try {
+                    const res = await fetch(PROXY_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: [{ role: "user", content: prompt }],
+                            temperature: 0.3
+                        })
+                    });
+                    const data = await res.json();
+                    const reply = data.choices[0].message.content;
+                    const picked = [];
+                    const lines = reply.split('\n');
+                    for (let l of lines) {
+                        const m = l.match(/\[ID:(\d+)\]/);
+                        if (m) {
+                            const id = parseInt(m[1]);
+                            if (cands[id]) {
+                                // On utilise le texte ORIGINAL du candidat pour garantir 100% de fidélité
+                                picked.push({
+                                    phrase: cands[id].phrase,
+                                    source: cands[id].source,
+                                    ai: true,
+                                    model: model.split('/')[1]
+                                });
+                            }
+                        }
+                    }
+                    if (picked.length > 0) return picked.slice(0, num);
+                } catch (e) { console.error(e); }
+            }
+            return cands.slice(0, num);
+        }
+
+        function display(cits) {
+            statusDiv.innerHTML = `<div class="info">${cits.length} paradoxes distillés</div>`;
+            cits.forEach(c => {
+                const d = document.createElement('div');
+                d.className = 'citation';
+                d.innerHTML = `
+                    <div class="citation-text">"${c.phrase}"</div>
+                    <div class="citation-source">
+                        📌 ${c.source} ${c.ai ? `<span class="ai-badge">IA : ${c.model}</span>` : ''}
+                    </div>
+                `;
+                resultsDiv.appendChild(d);
+            });
+        }
+
+        function showStatus(t, cl) { statusDiv.innerHTML = `<div class="${cl}">${t}</div>`; }
+    </script>
+</body>
+
+</html>
